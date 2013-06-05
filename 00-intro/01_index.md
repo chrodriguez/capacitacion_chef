@@ -13,7 +13,6 @@ por Lic. Christian A. Rodriguez [@car_unlp](https://twitter.com/car_unlp)
 # Temas 
 
 * Introducción
-* ¿Qué es Chef?
 * Desarrollando con Chef
 * Chef en producción
 
@@ -27,5 +26,5 @@ por Lic. Christian A. Rodriguez [@car_unlp](https://twitter.com/car_unlp)
 * Los problemas
 * La búsqueda de soluciones
 * DevOps 
-* Productos que facilitan la tarea
+* Productos que simplifican las tareas
 

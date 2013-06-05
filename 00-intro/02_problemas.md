@@ -1,3 +1,5 @@
+!SLIDE subsection center transition=scrollVert
+# Los Problemas
 !SLIDE bullets transition=scrollVert
 # Los problemas
 

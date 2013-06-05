@@ -1,3 +1,6 @@
+!SLIDE subsection center transition=scrollVert
+#Las soluciones
+
 !SLIDE bullets incremental transition=scrollVert
 #Las soluciones
 
@@ -64,15 +67,43 @@ alternativas
   * No revelar la identidad del servidor
   * No permitir ejecuciones de scripts en algunos directorios
   * Evitar que interfieran entre aplicaciones
-  * Iptables por usuario de aplicacion
-
-!SLIDE smbullets transition=scrollVert
-# Configuraciones de Apache con VHosts por usuario
-
-* Surgieron nuevas alternativas
-  * Nginx
-  * FPM PHP
 * Problemas?
   * Gestionar usuarios para cada aplicacion
   * Distintos ambientes: testing, producción
-  * Y las aplicaciones ruby y Java
+  * Aplicaciones Ruby y Java
+
+!SLIDE bullets smaller transition=scrollVert
+# Reglas de iptables por usuario de aplicacion
+
+Ejemplo de la regla por defecto de una aplicación WEB que no use una API o
+servicio:
+
+	@@@ sh
+	iptables -P OUTPUT DROP
+	iptables -P INPUT DROP
+	iptables -P FORWARD DROP
+	iptables -I INPUT -m state --ESTABLISHED,RELATED -j ACCEPT
+	iptables -I INPUT -p tcp --dport 80 -j ACCEPT
+	iptables -I OUTPUT -m state --STATE ESTABLISHED,RELATED \
+		-j ACCEPT
+	iptables -I OUTPUT -m owner --gid-owner webservers \
+		-m state --state ESTABLISHED,RELATED -j ACCEPT
+
+* Problemas
+  * Manejar qué aplicación se conecta con qué otra
+  * Y al migrar una dependencia?
+
+!SLIDE smbullets transition=scrollVert
+# Encontramos nuevos productos
+
+* [PHP fpm](http://php-fpm.org/)
+* [Nginx](http://nginx.org/)
+* [Varnish](https://www.varnish-cache.org/)
+* Ruby:
+  * [Apache Passenger](https://www.phusionpassenger.com)
+  * [Unicorn](http://unicorn.bogomips.org/)
+  * [Puma](http://puma.io/)
+
+Necesitamos expertice de nuestros equipos de trabajo en estos productos
+
+!SLIDE smbullets transition=scrollVert
