@@ -151,28 +151,156 @@ retorna 7 que es la última instrucción*
 	1.9.3-p429 :001 > 2+2
 	 => 4 
 
-!SLIDE bullets transition=scrollVert 
+!SLIDE execute transition=scrollVert 
 # Un poco de Ruby
 
-* Comentario
+## Comentarios
 
 	@@@ ruby
-	# Este es un comentario
+	#Este es un comentario
 
-* Asignación
-* Artimética básica
-* Strings
-  * Ruby dentro de strings
-* Boolenos
-* Negacion
-* Listas con arreglos
-* Operando con las listas
-* Hashes
-* Mashes
-* Expresiones regulares
-* Condicionales
-* Métodos
-* *Clases*
+## Asignación
+
+	@@@ ruby
+	x = 1
+
+## Strings
+
+	@@@ ruby
+	"con comillas dobles"
+	'con comillas simples'
+	"El resultado de 2+2 = #{2+2}"
+
+!SLIDE execute small transition=scrollVert 
+# Un poco de Ruby
+
+## Booleans
+
+Ruby tiene una visión simplista de la verdad: *todo lo que no sea `nil` o la constante `false` es `verdadero`* 
+
+	@@@ ruby
+	true            # => true
+	false           # => false
+	nil             # => nil
+	1 == 1          # => true 
+	1 == true       # => false 
+	nil == false    # => false 
+
+## Negacion
+
+	@@@ ruby
+	!true           # => false
+	!false          # => true
+	!nil            # => true
+	1 != 2          # => true 
+	1 != 1          # => false
+
+!SLIDE execute transition=scrollVert 
+# Un poco de Ruby
+
+## Símbolos
+
+Son constantes, que se precedent con el símbolo `:` que ocupan un único espacio de memoria:
+
+	@@@ ruby
+	:mi_simbolo.object_id  # => 461608
+	"mi_string".object_id  # => 9986260
+	"mi_string".object_id  # => 9996160
+	:mi_simbolo.object_id  # => 461608
+
+Los símbolos son usados generalmente para acceder a arreglos asociativos, por
+ejemplo:
+
+	@@@ ruby
+	default[:apache][:ports]
+
+.notes Usar simbolos para mejorar el uso de memoria puede ser un memory leak en algunos casos
+
+!SLIDE execute small transition=scrollVert 
+# Un poco de Ruby
+
+## Listas con arreglos
+
+	@@@ ruby
+	x = ["a", "b", "c"] # => ["a", "b", "c"]
+	x[0]                # => "a" 
+	x.first             # => "a" 
+	x.last              # => "c"
+	x + ["d"]           # => ["a", "b", "c", "d"]
+	x                   # => ["a", "b", "c"] 
+	x = x + ["d"]       # => ["a", "b", "c", "d"]
+	x                   # => ["a", "b", "c", "d"]
+	x += ["e"]          # => ["a", "b", "c", "d","e"]
+	x                   # => ["a", "b", "c", "d","e"]
+
+!SLIDE execute small transition=scrollVert 
+# Un poco de Ruby
+
+## Operando con las listas
+	@@@ ruby
+	x = [1, 2, 3, 4]
+	x.all?                     # => true
+	x.all? {|x| x % 2 == 0 }   # => false
+	x.any? {|x| x % 2 == 0 }   # => true
+	x.detect {|x| x % 2 == 0 } # => 2
+	x.each {|x| p x }          # => Imprime cada elem
+	x.select {|x| x % 2 }      # => [2, 4]
+	x.collect {|x| x*2 }       # => [2, 4, 6, 8]
+	x.map                      # Idem collect 
+	x.first                    # => 1
+	x.last                     # => 4
+	x[0]                       # => 1
+
+!SLIDE smbullets transition=scrollVert 
+# Un poco de Ruby
+## Bloques
+* En el ejemplo anterior usabamos bloques con `{...}`
+* Un bloque puede tener parámetros `{ |x| ...}`
+* Los bloques pueden escribirse en más de una línea usando `do... end`
+
+!SLIDE execute transition=scrollVert 
+# Un poco de Ruby
+## Bloques en más de una línea
+
+	@@@ ruby
+	array = [1, 2, 3, 4]
+	
+	array.collect! do |n|
+		n ** 2
+	end
+
+	array
+
+
+!SLIDE execute smaller transition=scrollVert 
+# Un poco de Ruby
+## Hashes
+
+Los Hashes son arreglos asociativos y por su estructura semejante a un registro,
+son muy utilizados
+
+	@@@ ruby
+	grades = { 
+	  "Jane Doe" => 10, 
+	  "Jim Doe" => 6 
+	}
+	grades["Jane Doe"]                # => 10
+
+### La sintaxis cambió a partir de la versión 1.9
+
+	@@@ ruby
+	options = {                       # => Sintaxis <= 1.8
+	  :opt_1 => 1, 
+	  :opt_2 => 2
+	}
+	options = { opt_1: 1, opt_2: 2}   # => Sintaxis > 1.8
+
+> Si un Hash utiliza strings para sus claves, los símbolos no podrán ser utilizados de forma indistinta. Para este tipo de situaciones se utilizan [Mash](https://github.com/mbleigh/mash)
+
+## Expresiones regulares
+## Condicionales
+## Métodos
+## *Clases*
   * No son necesarias en chef
 
 
