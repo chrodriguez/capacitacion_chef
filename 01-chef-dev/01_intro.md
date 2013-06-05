@@ -1,30 +1,18 @@
+!SLIDE subsection center transition=scrollVert
+# Chef
 
-* Chef
-  * Conceptos detrás de Chef
-  * ¿Es necesario saber Ruby?
-  * Lo fundamental de ruby
-  * GIT
-
-!SLIDE bullets incremental
-
-# Temas 
-
-* Primeros pasos con chef: desarrollo
+!SLIDE smbullets incremental transition=scrollVert
+#Introducción
+* Conceptos sobre Chef
+* Fundamentos de ruby
+  * El ambiente
+  * Probando ruby
+  * Breve introducción al lenguaje
+  * Qué son las gemas
+* GIT
+* Desarrollo con chef
   * Vagrant
-  * La primer receta
   * Berkshelf
-  * Escribiendo recetas 
-* Subiendo la apuesta
+  * Ciclo de desarrollo en Chef
   * Amazon EC2
-  * Roles 
-
-!SLIDE bullets incremental
-
-# Temas 
-
-* Chef en la organización
-  * Repaso de la arquitectura de chef
-  * knife
-  * Databags
-  * chef-repo
 

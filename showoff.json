@@ -2,8 +2,7 @@
   "name": "Chef", 
   "sections": [ 
       {"section":"00-intro"},
-      {"section":"01-chef-intro"},
-      {"section":"02-chef-dev"},
-      {"section":"03-chef-prod"}
+      {"section":"01-chef-dev"},
+      {"section":"02-chef-prod"}
     ]
 }
