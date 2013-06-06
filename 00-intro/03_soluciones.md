@@ -82,7 +82,8 @@ servicio:
 	iptables -P OUTPUT DROP
 	iptables -P INPUT DROP
 	iptables -P FORWARD DROP
-	iptables -I INPUT -m state --ESTABLISHED,RELATED -j ACCEPT
+	iptables -I INPUT -m state --ESTABLISHED,RELATED \
+		-j ACCEPT
 	iptables -I INPUT -p tcp --dport 80 -j ACCEPT
 	iptables -I OUTPUT -m state --STATE ESTABLISHED,RELATED \
 		-j ACCEPT
