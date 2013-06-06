@@ -953,7 +953,7 @@ do_something_useless 1, 2
 <ul>
 <li><p>No son necesarios en chef porque provee un DSL. Podr&#xED;amos usar clases si
 deseamos, pero el modelo de objetos necesario para Chef no amerita
-complicaciones. Tal ve en *</p></li>
+complicaciones</p></li>
 <li><p>Las clases son el concepto conocido</p></li>
 <li><p>Los m&#xF3;dulos permiten:</p>
 
@@ -1024,13 +1024,25 @@ utilizaremos en este proyecto, considerando incluso ambientes: <em>desarrollo</e
 
 <h2>Usando la Gema</h2>
 
-<p>Y ahora podemos crear un script ruby:</p>
+<p>Y ahora podemos crear un script ruby <code>test.rb</code>:</p>
 
 <pre class="sh_ruby"><code><code class="command"># require 'rainbow'</code>
 <code class="result">
 puts "this is red".foreground(:red) 
 puts "this on yellow bg".background(:yellow)
 puts "even bright underlined!".underline.bright</code></code></pre>
+
+<p>Para correrlo es <em>IMPORTANTE</em>:</p>
+
+<pre><code><code class="command">$ bundle exec &lt;comando&gt;</code>
+</code></pre>
+
+<p>En este caso ser&#xED;a:</p>
+
+<pre><code><code class="command">$ bundle exec ruby test.rb</code>
+</code></pre>
+
+<p><code>bundle exec</code> ejecuta el comando usando el ambiente con las gemas mencionadas en el Gemfile</p>
 </div>
 </div><div class="slide" data-transition="scrollVert"><div class="content smbullets" ref="01-chef-dev/03_ruby/27">
 <h1>Material de Ruby</h1>
