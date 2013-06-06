@@ -60,23 +60,29 @@ Ubicados dentro del directorio raiz `prueba_chef/` corremos
 	the comments in the Vagrantfile as well as documentation on
 	`vagrantup.com` for more information on using Vagrant.
 
-!SLIDE commandline incremental smaller transition=scrollVert
+!SLIDE smaller transition=scrollVert
 # Lo probamos usando Vagrant
 
-Editamos el archivo generado por `vagrant`, `Vagrantfile`
+## Editamos el archivo generado
+El comando vagrant init creó un archivo a partir de un template que llamó `Vagrantfile`. Debemos indicar qué IP darle a nuestra máquina virtual. Utilizaremos `33.33.33.100`
 
-Esta modificación es necesaria para que Vagrant pueda conectarse por `ssh`
+	@@@ ruby
+	Vagrant.configure("2") do |config|
+		config.vm.box = "opscode-ubuntu-1204"
+		config.vm.box_url = "http://vagra..."
+		config.vm.network :private_network, ip: "33.33.33.100"
+	end
 
-!SLIDE commandline incremental smaller transition=scrollVert
+!SLIDE commandline incremental transition=scrollVert
 # Lo probamos usando Vagrant
 
 Ahora podemos iniciar la máquina con vagrant
 	
 	$ vagrant up
 	Bringing machine 'default' up with 'virtualbox' provider...
-	[default] Box 'opscode-ubuntu-1204' was not found. Fetching box from specified
-	URL for the provider 'virtualbox'. Note that if the URL does not have
-	a box for this provider, you should interrupt Vagrant now and add
+	[default] Box 'opscode-ubuntu-1204' was not found. Fetching box from 
+	specified URL for the provider 'virtualbox'. Note that if the URL does not 
+	have a box for this provider, you should interrupt Vagrant now and add
 	the box yourself. Otherwise Vagrant will attempt to download the
 	full box prior to discovering this error.
 	Downloading or copying the box...
@@ -94,3 +100,43 @@ Ahora podemos iniciar la máquina con vagrant
 	[default] Booting VM...
 	[default] Waiting for VM to boot. This can take a few minutes.
 
+!SLIDE commandline incremental transition=scrollVert
+# Lo probamos usando Vagrant
+
+Nos conectamos a la consola de la máquina creada y verificamos los usuarios
+creados:
+
+	$ vagrant ssh
+	Welcome to Ubuntu 12.04.2 LTS (GNU/Linux 3.5.0-23-generic x86_64)
+
+	 * Documentation:  https://help.ubuntu.com/
+	Last login: Thu Jun  6 16:06:44 2013 from 10.0.2.2
+	vagrant@ubuntu-12:~$ getent passwd 
+
+!SLIDE smaller transition=scrollVert
+# Lo probamos usando Vagrant
+
+## Probemos la receta
+
+Tenemos que editar el archivo Vagrantfile indicando que queremos aprovisionarlo
+con **chef**. El archivo deberá quedar:
+
+	@@@ ruby
+	Vagrant.configure("2") do |config|
+	  config.vm.box = "opscode-ubuntu-1204"
+	  config.vm.box_url = "http://vagra..."
+	  config.vm.network :private_network, ip: "33.33.33.100"
+	  config.vm.provision :chef_solo do |chef|
+	    chef.cookbooks_path = "./cookbooks"
+	    chef.add_recipe "test"
+	  end
+	end
+
+!SLIDE small transition=scrollVert
+# Lo probamos usando Vagrant
+
+## Probemos la receta
+
+Una vez editado el Vagrantfile, reiniciamos vagrant y observamos la salida.
+
+	$ vagrant reload

@@ -26,7 +26,7 @@
 # Cookbooks y recipes
 * Los cookbooks y recipes se construyen a partir de **resources**
 * Chef provee una gran cantidad de resources
-* Además pueden escribirse los propios resources
+* Además pueden escribirse los propios
 * Muchos son contribuciones de la comunidad que utiliza Chef a partir de
   cookbooks públicos
 

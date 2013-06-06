@@ -12,7 +12,7 @@
 !SLIDE fullpage transition=scrollVert
 ![Git workflow](git-workflow.png)
 
-!SLIDE commandline incremental small transition=scrollVert
+!SLIDE commandline incremental transition=scrollVert
 # Comandos básicos
 
 	$ mkdir mi_proyecto
@@ -32,6 +32,10 @@
 	 #
 	 #	README.md
 	 nothing added to commit but untracked files present (use "git add" to track)
+
+!SLIDE commandline incremental transition=scrollVert
+# Comandos básicos
+### Agregando al Staging Area y luego al repo local
 	$ git add README
 	$ git status
 	 # On branch master
@@ -50,6 +54,7 @@
 
 !SLIDE commandline incremental transition=scrollVert
 # Comandos básicos
+### Agregando repos remotos
 
 	$ git remote -v
 	$ git remote add origin URL

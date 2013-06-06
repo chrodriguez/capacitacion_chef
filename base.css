@@ -67,8 +67,8 @@ code {
   border-radius: 4px;
   padding: 3px 6px;
   background: #eee;
-  overflow-x: scroll;
   font-style: normal;
+  font-size: 90%;
 }
 
 code code {
@@ -76,4 +76,14 @@ code code {
   background: transparent;
   box-shadow: none;
   padding: 0;
+}
+
+.small_images
+{
+ padding: 2em;
+}
+.small_images img
+{
+  width: 320px;
+  display: inline;
 }

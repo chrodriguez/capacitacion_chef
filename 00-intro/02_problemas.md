@@ -30,8 +30,10 @@
   * **API** 
   * **Balanceo y cache** 
 * Ejemplo con gráficos:
-  * [Disposición física](topologia-fisica.svg)
-  * [Disposición lógica](topologia-logica.svg)
+  <div class="small_images">
+    ![Disposición física](topologia-fisica.png)
+    ![Disposición lógica](topologia-logica.png)
+  </div>
 
 !SLIDE smbullets transition=scrollVert
 
@@ -46,7 +48,8 @@
 * Desarrollo no es el único cliente
 * Se cumplen muchas otras tareas complejas
 * Los recursos de soporte deben configurar servicios o arquitecturas que no
-  definieron o desconocen (API, desarrollos basados en Ruby, Erlang, NodeJS)
+  definieron o desconocen 
+  * *API, desarrollos basados en Ruby, Erlang, NodeJS*
 * Seguridad comprometida al hostear aplicaciones propias o de terceros
 * Manejo de acceso a los servidores
 * Vencimientos de SSL

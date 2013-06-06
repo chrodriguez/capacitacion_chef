@@ -6,7 +6,8 @@
 #Fundamentos de ruby
 
 * De origen Japonés
-* Lenguaje simple de leer pero potente
+* Lenguaje simple de leer
+  * Simple pero potente
 * Permite la definición de DSL
   * DSL: Domain Specific Language
 * Interpretado, reflexivo, orientado a objetos
@@ -392,6 +393,8 @@ complicaciones. Tal ve en *
 
 	$ gem install bundler
 
+!SLIDE commandline transition=scrollVert 
+# Uso de bundler
 ## Usando bundler
 
 Crear un nuevo directorio:
@@ -411,7 +414,7 @@ utilizaremos en este proyecto, considerando incluso ambientes: *desarrollo*,
 # Uso de bundler
 
 Editamos el archivo `Gemfile` y agregamos las gemas necesarios, en este ejemplo
-**dashing**
+**rainbow**
 
 	@@@ ruby
 	# A sample Gemfile
@@ -424,6 +427,9 @@ Actualizamos el proyecto:
 
 	$ bundle  # o bundle install o bundle update
 
+!SLIDE commandline transition=scrollVert 
+# Uso de bundler
+## Usando la Gema
 Y ahora podemos crear un script ruby:
 
 	@@@ ruby
