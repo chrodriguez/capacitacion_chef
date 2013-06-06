@@ -369,7 +369,7 @@ Y se invoca con o sin paréntesis
 ## Clases y Modulos
 * No son necesarios en chef porque provee un DSL. Podríamos usar clases si
 deseamos, pero el modelo de objetos necesario para Chef no amerita
-complicaciones. Tal ve en *
+complicaciones
 
 * Las clases son el concepto conocido
 
