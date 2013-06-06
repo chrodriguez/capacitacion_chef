@@ -99,6 +99,11 @@ Ahora podemos iniciar la máquina con vagrant
 	[default] -- 22 => 2222 (adapter 1)
 	[default] Booting VM...
 	[default] Waiting for VM to boot. This can take a few minutes.
+	[default] VM booted and ready for use!
+	[default] Configuring and enabling network interfaces...
+	[default] Mounting shared folders...
+	[default] -- /vagrant
+
 
 !SLIDE commandline incremental transition=scrollVert
 # Lo probamos usando Vagrant
@@ -132,7 +137,7 @@ con **chef**. El archivo deberá quedar:
 	  end
 	end
 
-!SLIDE small transition=scrollVert
+!SLIDE smaller transition=scrollVert
 # Lo probamos usando Vagrant
 
 ## Probemos la receta
@@ -140,3 +145,24 @@ con **chef**. El archivo deberá quedar:
 Una vez editado el Vagrantfile, reiniciamos vagrant y observamos la salida.
 
 	$ vagrant reload
+	[default] Attempting graceful shutdown of VM...
+	....
+	....
+	[default] -- /vagrant
+	[default] -- /tmp/vagrant-chef-1/chef-solo-1/cookbooks
+	[default] Running provisioner: chef_solo...
+	Generating chef JSON and uploading...
+	Running chef-solo...
+	stdin: is not a tty
+	[2013-06-06T17:06:24+00:00] INFO: *** Chef 11.4.4 ***
+	[2013-06-06T17:06:27+00:00] INFO: Setting the run_list to
+	 ["recipe[test]"] from JSON
+	[2013-06-06T17:06:27+00:00] INFO: Run List is [recipe[test]]
+	[2013-06-06T17:06:27+00:00] INFO: Run List expands to [test]
+	[2013-06-06T17:06:27+00:00] INFO: Starting Chef Run for
+	ubuntu-12.04.2-cespi-amd64
+	[2013-06-06T17:06:27+00:00] INFO: Running start handlers
+	[2013-06-06T17:06:27+00:00] INFO: Start handlers complete.
+	...
+	...
+
