@@ -14,11 +14,11 @@ posibles soluciones
   * Configuraciones de Apache con VHosts por usuario
   * Reglas de IPtables por usuario
   * Nuevos productos: nginx, openvz, varnish
- 
+
 !SLIDE smbullets transition=scrollVert
 # Virtualización
 
-* Nos ayudó a: 
+* Nos ayudó a:
   * Simplificar el backup
   * Gestión de equipos
   * Migrar en caliente
@@ -72,7 +72,7 @@ alternativas
   * Distintos ambientes: testing, producción
   * Aplicaciones Ruby y Java
 
-!SLIDE bullets smaller transition=scrollVert
+!SLIDE smbullets smaller transition=scrollVert
 # Reglas de iptables por usuario de aplicacion
 
 Ejemplo de la regla por defecto de una aplicación WEB que no use una API o
