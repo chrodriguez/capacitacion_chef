@@ -430,7 +430,7 @@ Actualizamos el proyecto:
 !SLIDE commandline transition=scrollVert 
 # Uso de bundler
 ## Usando la Gema
-Y ahora podemos crear un script ruby:
+Y ahora podemos crear un script ruby `test.rb`:
 
 	@@@ ruby
 	#require 'rainbow'
@@ -438,6 +438,16 @@ Y ahora podemos crear un script ruby:
 	puts "this is red".foreground(:red) 
 	puts "this on yellow bg".background(:yellow)
 	puts "even bright underlined!".underline.bright
+
+Para correrlo es *IMPORTANTE*:
+
+	$ bundle exec <comando>
+
+En este caso sería:
+
+	$ bundle exec ruby test.rb
+
+`bundle exec` ejecuta el comando usando el ambiente con las gemas mencionadas en el Gemfile
 
 !SLIDE smbullets transition=scrollVert 
 # Material de Ruby
