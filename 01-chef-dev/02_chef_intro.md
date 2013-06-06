@@ -11,6 +11,7 @@
   * Versionable
   * Testeable
   * Replicable
+* [¿Quienes lo usan?](http://www.opscode.com/customers/)
 
 !SLIDE smbullets transition=scrollVert
 # Conceptos sobre Chef

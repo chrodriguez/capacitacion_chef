@@ -297,10 +297,145 @@ son muy utilizados
 
 > Si un Hash utiliza strings para sus claves, los símbolos no podrán ser utilizados de forma indistinta. Para este tipo de situaciones se utilizan [Mash](https://github.com/mbleigh/mash)
 
-## Expresiones regulares
-## Condicionales
+!SLIDE execute smaller transition=scrollVert 
+# Un poco de Ruby
+
+## El `if`
+
+En ruby, toda expresión retorna algo. Por tanto:
+
+	@@@ ruby
+	a = if true
+		3
+	end
+
+Se puede escribir en una única línea:
+
+	@@@ ruby
+	a = 1
+	a = 7 if a < 2
+
+Existen `else` y `elsif`:
+
+	@@@ ruby
+	a = 10
+	if a < 2
+		a = 3
+	elsif a == 2
+		a = 4
+	else
+		a = 5
+	end
+
+!SLIDE execute transition=scrollVert 
+# Un poco de Ruby
+## El `unless`
+
+Se utiliza para evitar `if ! <expresion>`
+
+	@@@ ruby
+	a = 5
+	unless a == 4
+		a = 7
+	end
+
+
+!SLIDE execute smaller transition=scrollVert 
+# Un poco de Ruby
+
 ## Métodos
-## *Clases*
-  * No son necesarias en chef
 
+Los métodos se crean con la palabra `def`
 
+	@@@ ruby
+	def do_something_useless( first_argument, second_argument)
+		"You gave me #{first_argument} and #{second_argument}"
+	end
+	do_something_useless( "apple", "banana")
+
+Y se invoca con o sin paréntesis
+
+	@@@ ruby
+	do_something_useless( "apple", "banana")
+	# => "You gave me apple and banana"
+	do_something_useless 1, 2
+	# => "You gave me 1 and 2"
+
+> No usar paréntesis puede traer problemas por las reglas de precedencia
+
+!SLIDE smbullets transition=scrollVert 
+# Un poco de Ruby
+## Clases y Modulos
+* No son necesarios en chef porque provee un DSL. Podríamos usar clases si
+deseamos, pero el modelo de objetos necesario para Chef no amerita
+complicaciones. Tal ve en *
+
+* Las clases son el concepto conocido
+
+* Los módulos permiten:
+  * Definir `namespaces` y sobrecargar clases
+  * Permiten implementar `mixins`
+
+!SLIDE smbullets transition=scrollVert 
+# Qué son las gemas
+
+* Las gemas son librerías empaquetadas que se instalan desde la red e instalan
+  en mi ambiente
+* Históricamente se manejaban con el comando `gem`
+* Luego `rvm` introdujo el concepto de `gemsets`
+* Actualmente las gemas se manejan con [bundler](http://gembundler.com/)
+
+!SLIDE commandline transition=scrollVert 
+# Uso de bundler
+
+## Instalando bundler
+
+	$ gem install bundler
+
+## Usando bundler
+
+Crear un nuevo directorio:
+
+	$ mkdir mi_proyecto
+
+Inicializamos el nuevo directorio
+
+	$ bundle init
+	Writing new Gemfile to /xxx/Gemfile
+
+Esto creará un archivo llamado Gemfile, donde podemos agregar dependencias que
+utilizaremos en este proyecto, considerando incluso ambientes: *desarrollo*,
+*producción*
+
+!SLIDE commandline transition=scrollVert 
+# Uso de bundler
+
+Editamos el archivo `Gemfile` y agregamos las gemas necesarios, en este ejemplo
+**dashing**
+
+	@@@ ruby
+	# A sample Gemfile
+	source "https://rubygems.org"
+
+	# gem "rails"
+	gem "rainbow"
+
+Actualizamos el proyecto:
+
+	$ bundle  # o bundle install o bundle update
+
+Y ahora podemos crear un script ruby:
+
+	@@@ ruby
+	#require 'rainbow'
+
+	puts "this is red".foreground(:red) 
+	puts "this on yellow bg".background(:yellow)
+	puts "even bright underlined!".underline.bright
+
+!SLIDE smbullets transition=scrollVert 
+# Material de Ruby
+  * [Try Ruby](http://tryruby.org/)
+  * [Programming Ruby (2nd
+    edition)](http://pragprog.com/book/ruby/programming-ruby)
+  * [API Ruby](http://www.ruby-doc.org/core-2.0/)
