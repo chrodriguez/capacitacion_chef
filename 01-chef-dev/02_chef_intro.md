@@ -33,7 +33,7 @@
 
 !SLIDE center transition=scrollVert
 # Code CAN
-<iframe width="560" height="315" src="http://www.youtube.com/embed/T8ijdOQj4ZA" frameborder="0" allowfullscreen></iframe>
+[Ver video](http://www.youtube.com/embed/T8ijdOQj4ZA)
 
 !SLIDE center transition=scrollVert
 # Topología de Chef
