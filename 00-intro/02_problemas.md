@@ -11,6 +11,7 @@
 !SLIDE smbullets transition=scrollVert
 # Los problemas desde la visión de desarrollo
 
+* Tenemos 94 proyectos, 58 están con actividad
 * Versiones de productos todas las semanas
 * Por día se hacen alrededor de 5 deploys: 
   * *Por errores en producción*
@@ -28,6 +29,13 @@
   * **SSO** 
   * **API** 
   * **Balanceo y cache** 
+* Ejemplo con gráficos:
+  * [Disposición física](topologia-fisica.svg)
+  * [Disposición lógica](topologia-logica.svg)
+
+!SLIDE smbullets transition=scrollVert
+
+# Más problemas desde la visión de desarrollo
 * Conseguir elementos en producción
   * Dumps en producción
   * Código en producción

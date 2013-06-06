@@ -1,7 +1,7 @@
 !SLIDE subsection center
 ![cocinando](cocinando.png)
 # Opscode Chef
-<div class="destacado"> Un curso de cocina para Administradores, Desarrolladores y BDAs </div>
+<div class="destacado"> Un curso de cocina para Administradores, Desarrolladores y DBAs </div>
 
 ![logo](logo.png)
 <div class="destacado">

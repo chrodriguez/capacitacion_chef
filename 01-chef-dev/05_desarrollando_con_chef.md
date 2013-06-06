@@ -59,6 +59,18 @@ Ubicados dentro del directorio raiz `prueba_chef/` corremos
 	ready to `vagrant up` your first virtual environment! Please read
 	the comments in the Vagrantfile as well as documentation on
 	`vagrantup.com` for more information on using Vagrant.
+
+!SLIDE commandline incremental smaller transition=scrollVert
+# Lo probamos usando Vagrant
+
+Editamos el archivo generado por `vagrant`, `Vagrantfile`
+
+Esta modificación es necesaria para que Vagrant pueda conectarse por `ssh`
+
+!SLIDE commandline incremental smaller transition=scrollVert
+# Lo probamos usando Vagrant
+
+Ahora podemos iniciar la máquina con vagrant
 	
 	$ vagrant up
 	Bringing machine 'default' up with 'virtualbox' provider...
