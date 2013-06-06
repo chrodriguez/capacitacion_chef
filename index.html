@@ -92,10 +92,10 @@
 
 <h1>Opscode Chef</h1>
 
-<div class="destacado"> Un curso de cocina para Adminstradores, Desarrolladores y BDAs </div>
+<div class="destacado"> Un curso de cocina para Administradores, Desarrolladores y DBAs </div>
 
 <p><img src="./file/00-intro/logo.png" alt="logo">
-<div class="destacado"> 
+<div class="destacado">
 por Lic. Christian A. Rodriguez <a href="https://twitter.com/car_unlp">@car_unlp</a>
 </div></img>
 </p>
@@ -119,7 +119,7 @@ por Lic. Christian A. Rodriguez <a href="https://twitter.com/car_unlp">@car_unlp
 <ul>
 <li>Los problemas</li>
 <li>La b&#xFA;squeda de soluciones</li>
-<li>DevOps </li>
+<li>DevOps</li>
 <li>Productos que simplifican las tareas</li>
 </ul>
 </div>
@@ -143,6 +143,7 @@ por Lic. Christian A. Rodriguez <a href="https://twitter.com/car_unlp">@car_unlp
 <h1>Los problemas desde la visi&#xF3;n de desarrollo</h1>
 
 <ul>
+<li>Tenemos 94 proyectos, 58 est&#xE1;n con actividad</li>
 <li>Versiones de productos todas las semanas</li>
 <li>Por d&#xED;a se hacen alrededor de 5 deploys: 
 
@@ -160,7 +161,8 @@ por Lic. Christian A. Rodriguez <a href="https://twitter.com/car_unlp">@car_unlp
 </ul></li>
 </ul>
 </div>
-</div><div class="slide" data-transition="scrollVert"><div class="content smbullets" ref="00-intro/02_problemas/4">
+</div><div class="slide" data-transition="scrollVert">
+  <div class="content smbullets" ref="00-intro/02_problemas/4">
 <h1>M&#xE1;s problemas desde la visi&#xF3;n de desarrollo</h1>
 
 <ul>
@@ -171,6 +173,19 @@ por Lic. Christian A. Rodriguez <a href="https://twitter.com/car_unlp">@car_unlp
 <li><strong>API</strong> </li>
 <li><strong>Balanceo y cache</strong> </li>
 </ul></li>
+<li>Ejemplo con gr&#xE1;ficos:
+<div class="small_images">
+<img src="./file/00-intro/topologia-fisica.png" alt="Disposici&#xF3;n f&#xED;sica">
+<img src="./file/00-intro/topologia-logica.png" alt="Disposici&#xF3;n l&#xF3;gica">
+</img></img>
+</div>
+</li>
+</ul>
+</div>
+</div><div class="slide" data-transition="scrollVert"><div class="content smbullets" ref="00-intro/02_problemas/5">
+<h1>M&#xE1;s problemas desde la visi&#xF3;n de desarrollo</h1>
+
+<ul>
 <li>Conseguir elementos en producci&#xF3;n
 
 <ul>
@@ -179,20 +194,24 @@ por Lic. Christian A. Rodriguez <a href="https://twitter.com/car_unlp">@car_unlp
 </ul></li>
 </ul>
 </div>
-</div><div class="slide" data-transition="scrollVert"><div class="content smbullets" ref="00-intro/02_problemas/5">
+</div><div class="slide" data-transition="scrollVert"><div class="content smbullets" ref="00-intro/02_problemas/6">
 <h1>Los problemas desde la visi&#xF3;n de soporte</h1>
 
 <ul>
 <li>Desarrollo no es el &#xFA;nico cliente</li>
 <li>Se cumplen muchas otras tareas complejas</li>
 <li>Los recursos de soporte deben configurar servicios o arquitecturas que no
-definieron o desconocen (API, desarrollos basados en Ruby, Erlang, NodeJS)</li>
+definieron o desconocen 
+
+<ul>
+<li><em>API, desarrollos basados en Ruby, Erlang, NodeJS</em></li>
+</ul></li>
 <li>Seguridad comprometida al hostear aplicaciones propias o de terceros</li>
 <li>Manejo de acceso a los servidores</li>
 <li>Vencimientos de SSL</li>
 </ul>
 </div>
-</div><div class="slide" data-transition="scrollVert"><div class="content smbullets" ref="00-intro/02_problemas/6">
+</div><div class="slide" data-transition="scrollVert"><div class="content smbullets" ref="00-intro/02_problemas/7">
 <h1>Los problemas desde la visi&#xF3;n de producci&#xF3;n</h1>
 
 <ul>
@@ -232,7 +251,7 @@ posibles soluciones</p>
 <h1>Virtualizaci&#xF3;n</h1>
 
 <ul>
-<li><p>Nos ayud&#xF3; a: </p>
+<li><p>Nos ayud&#xF3; a:</p>
 
 <ul>
 <li>Simplificar el backup</li>
@@ -304,7 +323,7 @@ estandar:
 </ul></li>
 </ul>
 </div>
-</div><div class="slide" data-transition="scrollVert"><div class="content bullets smaller" ref="00-intro/03_soluciones/7">
+</div><div class="slide" data-transition="scrollVert"><div class="content smbullets smaller" ref="00-intro/03_soluciones/7">
 <h1>Reglas de iptables por usuario de aplicacion</h1>
 
 <p>Ejemplo de la regla por defecto de una aplicaci&#xF3;n WEB que no use una API o
@@ -313,7 +332,8 @@ servicio:</p>
 <pre class="sh_sh"><code>iptables -P OUTPUT DROP
 iptables -P INPUT DROP
 iptables -P FORWARD DROP
-iptables -I INPUT -m state --ESTABLISHED,RELATED -j ACCEPT
+iptables -I INPUT -m state --ESTABLISHED,RELATED \
+    -j ACCEPT
 iptables -I INPUT -p tcp --dport 80 -j ACCEPT
 iptables -I OUTPUT -m state --STATE ESTABLISHED,RELATED \
     -j ACCEPT
@@ -460,7 +480,7 @@ convenciones</li>
 </div><div class="slide" data-transition="scrollVert"><div class="content subsection center" ref="01-chef-dev/01_intro/1">
 <h1>Chef</h1>
 </div>
-</div><div class="slide" data-transition="scrollVert"><div class="content smbullets incremental" ref="01-chef-dev/01_intro/2">
+</div><div class="slide" data-transition="scrollVert"><div class="content smbullets incremental small" ref="01-chef-dev/01_intro/2">
 <h1>Introducci&#xF3;n</h1>
 
 <ul>
@@ -472,15 +492,18 @@ convenciones</li>
 <li>Probando ruby</li>
 <li>Breve introducci&#xF3;n al lenguaje</li>
 <li>Qu&#xE9; son las gemas</li>
+<li>Material de Ruby</li>
 </ul></li>
 <li>GIT</li>
-<li>Desarrollo con chef
+<li>Desarrollando con chef
 
 <ul>
+<li>Recursos</li>
 <li>Vagrant</li>
 <li>Berkshelf</li>
 <li>Ciclo de desarrollo en Chef</li>
 <li>Amazon EC2</li>
+<li>Material de chef</li>
 </ul></li>
 </ul>
 </div>
@@ -501,6 +524,7 @@ convenciones</li>
 <li>Testeable</li>
 <li>Replicable</li>
 </ul></li>
+<li><a href="http://www.opscode.com/customers/">&#xBF;Quienes lo usan?</a></li>
 </ul>
 </div>
 </div><div class="slide" data-transition="scrollVert"><div class="content smbullets" ref="01-chef-dev/02_chef_intro/3">
@@ -521,7 +545,7 @@ infraestructura automatizada</li>
 <ul>
 <li>Los cookbooks y recipes se construyen a partir de <strong>resources</strong></li>
 <li>Chef provee una gran cantidad de resources</li>
-<li>Adem&#xE1;s pueden escribirse los propios resources</li>
+<li>Adem&#xE1;s pueden escribirse los propios</li>
 <li>Muchos son contribuciones de la comunidad que utiliza Chef a partir de
 cookbooks p&#xFA;blicos</li>
 </ul>
@@ -548,7 +572,11 @@ cookbooks p&#xFA;blicos</li>
 
 <ul>
 <li>De origen Japon&#xE9;s</li>
-<li>Lenguaje simple de leer pero potente</li>
+<li>Lenguaje simple de leer
+
+<ul>
+<li>Simple pero potente</li>
+</ul></li>
 <li>Permite la definici&#xF3;n de DSL
 
 <ul>
@@ -854,21 +882,482 @@ options = { opt_1: 1, opt_2: 2}   # =&gt; Sintaxis &gt; 1.8</code></pre>
 <blockquote>
 <p>Si un Hash utiliza strings para sus claves, los s&#xED;mbolos no podr&#xE1;n ser utilizados de forma indistinta. Para este tipo de situaciones se utilizan <a href="https://github.com/mbleigh/mash">Mash</a></p>
 </blockquote>
+</div>
+</div><div class="slide" data-transition="scrollVert"><div class="content execute smaller" ref="01-chef-dev/03_ruby/18">
+<h1>Un poco de Ruby</h1>
 
-<h2>Expresiones regulares</h2>
+<h2>El <code>if</code></h2>
 
-<h2>Condicionales</h2>
+<p>En ruby, toda expresi&#xF3;n retorna algo. Por tanto:</p>
+
+<pre class="sh_ruby"><code>a = if true
+    3
+end</code></pre>
+
+<p>Se puede escribir en una &#xFA;nica l&#xED;nea:</p>
+
+<pre class="sh_ruby"><code>a = 1
+a = 7 if a &lt; 2</code></pre>
+
+<p>Existen <code>else</code> y <code>elsif</code>:</p>
+
+<pre class="sh_ruby"><code>a = 10
+if a &lt; 2
+    a = 3
+elsif a == 2
+    a = 4
+else
+    a = 5
+end</code></pre>
+</div>
+</div><div class="slide" data-transition="scrollVert"><div class="content execute" ref="01-chef-dev/03_ruby/19">
+<h1>Un poco de Ruby</h1>
+
+<h2>El <code>unless</code></h2>
+
+<p>Se utiliza para evitar <code>if ! &lt;expresion&gt;</code></p>
+
+<pre class="sh_ruby"><code>a = 5
+unless a == 4
+    a = 7
+end</code></pre>
+</div>
+</div><div class="slide" data-transition="scrollVert"><div class="content execute smaller" ref="01-chef-dev/03_ruby/20">
+<h1>Un poco de Ruby</h1>
 
 <h2>M&#xE9;todos</h2>
 
-<h2><em>Clases</em></h2>
+<p>Los m&#xE9;todos se crean con la palabra <code>def</code></p>
+
+<pre class="sh_ruby"><code>def do_something_useless( first_argument, second_argument)
+    "You gave me #{first_argument} and #{second_argument}"
+end
+do_something_useless( "apple", "banana")</code></pre>
+
+<p>Y se invoca con o sin par&#xE9;ntesis</p>
+
+<pre class="sh_ruby"><code>do_something_useless( "apple", "banana")
+# =&gt; "You gave me apple and banana"
+do_something_useless 1, 2
+# =&gt; "You gave me 1 and 2"</code></pre>
+
+<blockquote>
+<p>No usar par&#xE9;ntesis puede traer problemas por las reglas de precedencia</p>
+</blockquote>
+</div>
+</div><div class="slide" data-transition="scrollVert"><div class="content smbullets" ref="01-chef-dev/03_ruby/21">
+<h1>Un poco de Ruby</h1>
+
+<h2>Clases y Modulos</h2>
 
 <ul>
-<li>No son necesarias en chef</li>
+<li><p>No son necesarios en chef porque provee un DSL. Podr&#xED;amos usar clases si
+deseamos, pero el modelo de objetos necesario para Chef no amerita
+complicaciones. Tal ve en *</p></li>
+<li><p>Las clases son el concepto conocido</p></li>
+<li><p>Los m&#xF3;dulos permiten:</p>
+
+<ul>
+<li>Definir <code>namespaces</code> y sobrecargar clases</li>
+<li>Permiten implementar <code>mixins</code></li>
+</ul></li>
 </ul>
 </div>
-</div><div class="slide" data-transition="none"><div class="content" ref="02-chef-prod/01-intro">
-<p>https://github.com/jonlives/knife-spork</p>
+</div><div class="slide" data-transition="scrollVert"><div class="content smbullets" ref="01-chef-dev/03_ruby/22">
+<h1>Qu&#xE9; son las gemas</h1>
+
+<ul>
+<li>Las gemas son librer&#xED;as empaquetadas que se instalan desde la red e instalan
+en mi ambiente</li>
+<li>Hist&#xF3;ricamente se manejaban con el comando <code>gem</code></li>
+<li>Luego <code>rvm</code> introdujo el concepto de <code>gemsets</code></li>
+<li>Actualmente las gemas se manejan con <a href="http://gembundler.com/">bundler</a></li>
+</ul>
+</div>
+</div><div class="slide" data-transition="scrollVert"><div class="content commandline" ref="01-chef-dev/03_ruby/23">
+<h1>Uso de bundler</h1>
+
+<h2>Instalando bundler</h2>
+
+<pre><code><code class="command">$ gem install bundler</code>
+</code></pre>
+</div>
+</div><div class="slide" data-transition="scrollVert"><div class="content commandline" ref="01-chef-dev/03_ruby/24">
+<h1>Uso de bundler</h1>
+
+<h2>Usando bundler</h2>
+
+<p>Crear un nuevo directorio:</p>
+
+<pre><code><code class="command">$ mkdir mi_proyecto</code>
+</code></pre>
+
+<p>Inicializamos el nuevo directorio</p>
+
+<pre><code><code class="command">$ bundle init</code>
+<code class="result">Writing new Gemfile to /xxx/Gemfile
+</code></code></pre>
+
+<p>Esto crear&#xE1; un archivo llamado Gemfile, donde podemos agregar dependencias que
+utilizaremos en este proyecto, considerando incluso ambientes: <em>desarrollo</em>,
+<em>producci&#xF3;n</em></p>
+</div>
+</div><div class="slide" data-transition="scrollVert"><div class="content commandline" ref="01-chef-dev/03_ruby/25">
+<h1>Uso de bundler</h1>
+
+<p>Editamos el archivo <code>Gemfile</code> y agregamos las gemas necesarios, en este ejemplo
+<strong>rainbow</strong></p>
+
+<pre class="sh_ruby"><code><code class="command"># A sample Gemfile</code>
+<code class="result">source "https://rubygems.org"
+
+</code><code class="command"># gem "rails"</code>
+<code class="result">gem "rainbow"</code></code></pre>
+
+<p>Actualizamos el proyecto:</p>
+
+<pre><code><code class="command">$ bundle  # o bundle install o bundle update</code>
+</code></pre>
+</div>
+</div><div class="slide" data-transition="scrollVert"><div class="content commandline" ref="01-chef-dev/03_ruby/26">
+<h1>Uso de bundler</h1>
+
+<h2>Usando la Gema</h2>
+
+<p>Y ahora podemos crear un script ruby:</p>
+
+<pre class="sh_ruby"><code><code class="command"># require 'rainbow'</code>
+<code class="result">
+puts "this is red".foreground(:red) 
+puts "this on yellow bg".background(:yellow)
+puts "even bright underlined!".underline.bright</code></code></pre>
+</div>
+</div><div class="slide" data-transition="scrollVert"><div class="content smbullets" ref="01-chef-dev/03_ruby/27">
+<h1>Material de Ruby</h1>
+
+<ul>
+<li><a href="http://tryruby.org/">Try Ruby</a></li>
+<li><a href="http://pragprog.com/book/ruby/programming-ruby">Programming Ruby (2nd
+edition)</a></li>
+<li><a href="http://www.ruby-doc.org/core-2.0/">API Ruby</a></li>
+</ul>
+</div>
+</div><div class="slide" data-transition="scrollVert"><div class="content subsection center" ref="01-chef-dev/04_git/1">
+<p><a href="http://git-scm.com/"><img src="./file/01-chef-dev/git.png" alt="GIT"/></a>
+
+<h1>Un poco de GIT</h1>
+</p>
+</div>
+</div><div class="slide" data-transition="scrollVert"><div class="content smbullets small incremental" ref="01-chef-dev/04_git/2">
+<h1>Introducci&#xF3;n</h1>
+
+<ul>
+<li>Es un <strong>SCM</strong> <em>(Source Code Management)</em></li>
+<li>Si usabas SVN, hay que comprarse:
+<img src="./file/01-chef-dev/MIB.png" alt="MIB Memory eraser"/>
+</li>
+</ul>
+</div>
+</div><div class="slide" data-transition="scrollVert"><div class="content fullpage" ref="01-chef-dev/04_git/3">
+<p><img src="./file/01-chef-dev/git-workflow.png" alt="Git workflow"/>
+</p>
+</div>
+</div><div class="slide" data-transition="scrollVert"><div class="content commandline incremental" ref="01-chef-dev/04_git/4">
+<h1>Comandos b&#xE1;sicos</h1>
+
+<pre><code><code class="command">$ mkdir mi_proyecto</code>
+<code class="command">$ cd mi_proyecto</code>
+<code class="command">$ git init </code>
+<code class="result">Initialized empty Git repository in /xxx/mi_proyecto/.git/
+</code><code class="command">$ ls -a</code>
+<code class="result">.  ..  .git
+</code><code class="command">$ echo Hola &gt; README.md</code>
+<code class="command">$ git status</code>
+<code class="result"> # On branch master
+ #
+ # Initial commit
+ #
+ # Untracked files:
+ #   (use "git add &lt;file&gt;..." to include in what will be committed)
+ #
+ #  README.md
+ nothing added to commit but untracked files present (use "git add" to track)
+</code></code></pre>
+</div>
+</div><div class="slide" data-transition="scrollVert"><div class="content commandline incremental" ref="01-chef-dev/04_git/5">
+<h1>Comandos b&#xE1;sicos</h1>
+
+<h3>Agregando al Staging Area y luego al repo local</h3>
+
+<pre><code><code class="command">$ git add README</code>
+<code class="command">$ git status</code>
+<code class="result"> # On branch master
+ #
+ # Initial commit
+ #
+ # Changes to be committed:
+ #   (use "git rm --cached &lt;file&gt;..." to unstage)
+ #
+ #  new file:   README.md
+ #
+</code><code class="command">$ git commit -m "Importacion inicial"</code>
+<code class="result">[master (root-commit) 3667c85] Importacion inicial
+ 1 file changed, 1 insertion(+)
+ create mode 100644 README.md
+</code></code></pre>
+</div>
+</div><div class="slide" data-transition="scrollVert"><div class="content commandline incremental" ref="01-chef-dev/04_git/6">
+<h1>Comandos b&#xE1;sicos</h1>
+
+<h3>Agregando repos remotos</h3>
+
+<pre><code><code class="command">$ git remote -v</code>
+<code class="command">$ git remote add origin URL</code>
+<code class="command">$ git remote -v</code>
+<code class="result">origin URL (fetch)
+origin URL (push)
+</code><code class="command">$ git push -u &lt;URL de remoto&gt; &lt;branch&gt;</code>
+</code></pre>
+</div>
+</div><div class="slide" data-transition="scrollVert"><div class="content smbullets" ref="01-chef-dev/04_git/7">
+<h1>Algunos conceptos</h1>
+
+<ul>
+<li>El <strong>branch</strong> por defecto es <strong>master</strong></li>
+<li>A la URL remota donde hacemos push se lo denomina <strong>upstream</strong> </li>
+</ul>
+</div>
+</div><div class="slide" data-transition="scrollVert"><div class="content smbullets" ref="01-chef-dev/04_git/8">
+<h1>Github</h1>
+
+<p><a href="https://github.com"><img src="./file/01-chef-dev/github.png" alt="Github"/></a>
+</p>
+</div>
+</div><div class="slide" data-transition="scrollVert"><div class="content smbullets small" ref="01-chef-dev/04_git/9">
+<h1>Github</h1>
+
+<ul>
+<li>Es una red social de c&#xF3;digo</li>
+<li>Utiliza GIT</li>
+<li>Cada usuario es due&#xF1;o de sus repositorios</li>
+<li>No es posible hacer push en repositorio de otros usuarios
+
+<ul>
+<li>Intorduce el concepto de <strong>fork</strong></li>
+<li>Y el de <strong>pull requests</strong></li>
+</ul></li>
+<li>Permite la colaboraci&#xF3;n mucho m&#xE1;s &#xE1;gil:
+
+<ul>
+<li>Se comentan los patch a proyectos</li>
+<li>Se aceptan o no por el due&#xF1;o</li>
+<li>Si no lo aceptan, uso mi fork</li>
+</ul></li>
+<li>Pueden definirse organizaciones que agrupan usuarios y en este caso es posible
+compartir repositorios
+
+<ul>
+<li><a href="https://github.com/chrodriguez">Mi espacio en Github</a></li>
+<li><a href="https://github.com/Desarrollo-CeSPI">El espacio de CeSPI en Github</a></li>
+</ul></li>
+</ul>
+</div>
+</div><div class="slide" data-transition="scrollVert"><div class="content smbullets" ref="01-chef-dev/04_git/10">
+<h1>Material de GIT</h1>
+
+<ul>
+<li><a href="http://try.github.io/">Try GIT</a></li>
+<li><a href="http://git-scm.com/">Libro de GIT</a></li>
+<li><a href="http://pcottle.github.io/learnGitBranching/">Git branching</a></li>
+</ul>
+</div>
+</div><div class="slide" data-transition="scrollVert"><div class="content subsection center" ref="01-chef-dev/05_desarrollando_con_chef/1">
+<h1>Desarrollando con Chef</h1>
+</div>
+</div><div class="slide" data-transition="scrollVert"><div class="content smbullets" ref="01-chef-dev/05_desarrollando_con_chef/2">
+<h1>Desarrollando con Chef</h1>
+
+<ul>
+<li>Se respeta una filosof&#xED;a muy instaurada en la comunidad Ruby
+
+<ul>
+<li><strong>Convention over configuration</strong></li>
+</ul></li>
+<li>Todos los cookbooks tienen la misma estructura</li>
+</ul>
+</div>
+</div><div class="slide" data-transition="scrollVert"><div class="content commandline" ref="01-chef-dev/05_desarrollando_con_chef/3">
+<h1>Estructura de un cookbook</h1>
+
+<pre><code><code class="command">$ tree -d mis_cookbooks/mi_cookbook</code>
+<code class="result"> &#x251C;&#x2500;&#x2500; attributes
+ &#x251C;&#x2500;&#x2500; definitions
+ &#x251C;&#x2500;&#x2500; files
+ &#x251C;&#x2500;&#x2500; libraries
+ &#x251C;&#x2500;&#x2500; providers
+ &#x251C;&#x2500;&#x2500; recipes
+ &#x251C;&#x2500;&#x2500; resources
+ &#x2514;&#x2500;&#x2500; templates
+</code></code></pre>
+</div>
+</div><div class="slide" data-transition="scrollVert"><div class="content smbullets small" ref="01-chef-dev/05_desarrollando_con_chef/4">
+<h1>Estructura de un cookbook</h1>
+
+<ul>
+<li>Los <strong>recipes</strong> se guardan en el directorio <code>recipes</code>. Y su nombre es importante:
+
+<ul>
+<li><strong>recipe[ntp::foo]:</strong> <code>mis_cookbooks/ntp/recipes/foo.rb</code></li>
+<li><strong>recipe[ntp]:</strong> <code>mis_cookbooks/ntp/recipes/default.rb</code></li>
+</ul></li>
+<li>El nombre de un recipe debe especificar el nombre del cookbook definendo as&#xED; un <strong>namespace</strong></li>
+</ul>
+</div>
+</div><div class="slide" data-transition="scrollVert"><div class="content commandline incremental" ref="01-chef-dev/05_desarrollando_con_chef/5">
+<h1>Mi primer recipe</h1>
+
+<p>Creamos el directorio para el <code>cookbook</code> y <code>recipe</code></p>
+
+<pre><code><code class="command">$ mkdir -p prueba_chef/cookbooks/test/recipes</code>
+</code></pre>
+</div>
+</div><div class="slide" data-transition="scrollVert"><div class="content small" ref="01-chef-dev/05_desarrollando_con_chef/6">
+<h1>Mi primer recipe</h1>
+
+<p>Creamos el archivo <code>prueba_chef/cookbooks/test/recipes/default.rb</code> con el siguiente contenido:</p>
+
+<pre class="sh_ruby"><code>user "ejemplo" do
+  home '/home/ejemplo'
+  shell '/bin/bash'
+  password 'STHx70ea82L.Yw1eAha15.'
+  # calculada con: 
+  #   openssl passwd -1 "pass_de_ejemplo"
+end</code></pre>
+</div>
+</div><div class="slide" data-transition="scrollVert"><div class="content commandline incremental smaller" ref="01-chef-dev/05_desarrollando_con_chef/7">
+<h1>Lo probamos usando Vagrant</h1>
+
+<p>Ubicados dentro del directorio raiz <code>prueba_chef/</code> corremos</p>
+
+<pre><code><code class="command">$ vagrant init ubuntu-1204 \
+     http://vagrantbox.desarrollo.cespi.unlp.edu.ar/pub/ubuntu-12.04.2-cespi-amd64.box</code>
+<code class="result">A `Vagrantfile` has been placed in this directory. You are now
+ready to `vagrant up` your first virtual environment! Please read
+the comments in the Vagrantfile as well as documentation on
+`vagrantup.com` for more information on using Vagrant.
+</code></code></pre>
+</div>
+</div><div class="slide" data-transition="scrollVert"><div class="content smaller" ref="01-chef-dev/05_desarrollando_con_chef/8">
+<h1>Lo probamos usando Vagrant</h1>
+
+<h2>Editamos el archivo generado</h2>
+
+<p>El comando vagrant init cre&#xF3; un archivo a partir de un template que llam&#xF3; <code>Vagrantfile</code>. Debemos indicar qu&#xE9; IP darle a nuestra m&#xE1;quina virtual. Utilizaremos <code>33.33.33.100</code></p>
+
+<pre class="sh_ruby"><code>Vagrant.configure("2") do |config|
+    config.vm.box = "opscode-ubuntu-1204"
+    config.vm.box_url = "http://vagra..."
+    config.vm.network :private_network, ip: "33.33.33.100"
+end</code></pre>
+</div>
+</div><div class="slide" data-transition="scrollVert"><div class="content commandline incremental" ref="01-chef-dev/05_desarrollando_con_chef/9">
+<h1>Lo probamos usando Vagrant</h1>
+
+<p>Ahora podemos iniciar la m&#xE1;quina con vagrant</p>
+
+<pre><code><code class="command">$ vagrant up</code>
+<code class="result">Bringing machine 'default' up with 'virtualbox' provider...
+[default] Box 'opscode-ubuntu-1204' was not found. Fetching box from 
+specified URL for the provider 'virtualbox'. Note that if the URL does not 
+have a box for this provider, you should interrupt Vagrant now and add
+the box yourself. Otherwise Vagrant will attempt to download the
+full box prior to discovering this error.
+Downloading or copying the box...
+Extracting box...te: 4563k/s, Estimated time remaining: 0:00:01)
+Successfully added box 'opscode-ubuntu-1204' with provider 'virtualbox'!
+[default] Importing base box 'opscode-ubuntu-1204'...
+[default] Matching MAC address for NAT networking...
+[default] Setting the name of the VM...
+[default] Clearing any previously set forwarded ports...
+[default] Creating shared folders metadata...
+[default] Clearing any previously set network interfaces...
+[default] Preparing network interfaces based on configuration...
+[default] Forwarding ports...
+[default] -- 22 =&gt; 2222 (adapter 1)
+[default] Booting VM...
+[default] Waiting for VM to boot. This can take a few minutes.
+[default] VM booted and ready for use!
+[default] Configuring and enabling network interfaces...
+[default] Mounting shared folders...
+[default] -- /vagrant
+</code></code></pre>
+</div>
+</div><div class="slide" data-transition="scrollVert"><div class="content commandline incremental" ref="01-chef-dev/05_desarrollando_con_chef/10">
+<h1>Lo probamos usando Vagrant</h1>
+
+<p>Nos conectamos a la consola de la m&#xE1;quina creada y verificamos los usuarios
+creados:</p>
+
+<pre><code><code class="command">$ vagrant ssh</code>
+<code class="result">Welcome to Ubuntu 12.04.2 LTS (GNU/Linux 3.5.0-23-generic x86_64)
+
+ * Documentation:  https://help.ubuntu.com/
+Last login: Thu Jun  6 16:06:44 2013 from 10.0.2.2
+vagrant@ubuntu-12:~$ getent passwd 
+</code></code></pre>
+</div>
+</div><div class="slide" data-transition="scrollVert"><div class="content smaller" ref="01-chef-dev/05_desarrollando_con_chef/11">
+<h1>Lo probamos usando Vagrant</h1>
+
+<h2>Probemos la receta</h2>
+
+<p>Tenemos que editar el archivo Vagrantfile indicando que queremos aprovisionarlo
+con <strong>chef</strong>. El archivo deber&#xE1; quedar:</p>
+
+<pre class="sh_ruby"><code>Vagrant.configure("2") do |config|
+  config.vm.box = "opscode-ubuntu-1204"
+  config.vm.box_url = "http://vagra..."
+  config.vm.network :private_network, ip: "33.33.33.100"
+  config.vm.provision :chef_solo do |chef|
+    chef.cookbooks_path = "./cookbooks"
+    chef.add_recipe "test"
+  end
+end</code></pre>
+</div>
+</div><div class="slide" data-transition="scrollVert"><div class="content smaller" ref="01-chef-dev/05_desarrollando_con_chef/12">
+<h1>Lo probamos usando Vagrant</h1>
+
+<h2>Probemos la receta</h2>
+
+<p>Una vez editado el Vagrantfile, reiniciamos vagrant y observamos la salida.</p>
+
+<pre><code>$ vagrant reload
+[default] Attempting graceful shutdown of VM...
+....
+....
+[default] -- /vagrant
+[default] -- /tmp/vagrant-chef-1/chef-solo-1/cookbooks
+[default] Running provisioner: chef_solo...
+Generating chef JSON and uploading...
+Running chef-solo...
+stdin: is not a tty
+[2013-06-06T17:06:24+00:00] INFO: *** Chef 11.4.4 ***
+[2013-06-06T17:06:27+00:00] INFO: Setting the run_list to
+ ["recipe[test]"] from JSON
+[2013-06-06T17:06:27+00:00] INFO: Run List is [recipe[test]]
+[2013-06-06T17:06:27+00:00] INFO: Run List expands to [test]
+[2013-06-06T17:06:27+00:00] INFO: Starting Chef Run for
+ubuntu-12.04.2-cespi-amd64
+[2013-06-06T17:06:27+00:00] INFO: Running start handlers
+[2013-06-06T17:06:27+00:00] INFO: Start handlers complete.
+...
+...
+</code></pre>
+</div>
+</div><div class="slide" data-transition="scrollVert"><div class="content center subsection" ref="02-chef-prod/01-intro">
+<h1>TODO</h1>
+
+<p class="notes">https://github.com/jonlives/knife-spork</p>
 </div>
 </div></div>
 <div id="pauseScreen">
