@@ -5,16 +5,12 @@
   src: url(GochiHand-Regular.ttf);
 }
 
-#preso {
-  box-shadow: none;
-}
-
 div.content {
-  margin-top: -32px !important;
+    margin-top: -32px !important;
 }
 
 body {
-  background: #222;
+  background: #fff;
 }
 
 .destacado {
@@ -24,30 +20,20 @@ body {
 
 .slide {
   background: url(background.jpg);
-  border: 1px solid #111;
-  box-shadow: 0 0 10px 3px rgba(0, 0, 0, .5) inset;
-  text-shadow: 0 1px 1px rgba(0, 0, 0, .45);
 }
 
-.slide a {
-  color: #0a5034;
-  text-decoration: none;
-  text-shadow: 0 1px 1px rgba(0, 40, 0, .85);
-}
-
-.slide h1 {
-  font-size: 3em;
-  color: #fff;
+.subsection h1
+{
   background-color: #006144;
-  padding: 0.25em 10px 0.25em 0;
-  text-align: right;
-  text-shadow: 0 2px 2px rgba(0, 0, 0, .85);
-  border-bottom: 3px solid #003b29;
-  box-shadow: 0 2px 2px rgba(0, 0, 0, .5);
-}
-
-.slide .subsection h1 {
   text-align: center;
+}
+h1 {
+    font-size: 3em;
+    color: #fff;
+    background-color: #006144;
+    padding: 0.25em 0 0.25em;
+    text-align: right;
+    padding-right: 10px;
 }
 
 .smbullets > ul > li,
