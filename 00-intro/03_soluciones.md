@@ -14,11 +14,11 @@ posibles soluciones
   * Configuraciones de Apache con VHosts por usuario
   * Reglas de IPtables por usuario
   * Nuevos productos: nginx, openvz, varnish
- 
+
 !SLIDE smbullets transition=scrollVert
 # Virtualización
 
-* Nos ayudó a: 
+* Nos ayudó a:
   * Simplificar el backup
   * Gestión de equipos
   * Migrar en caliente
@@ -72,7 +72,7 @@ alternativas
   * Distintos ambientes: testing, producción
   * Aplicaciones Ruby y Java
 
-!SLIDE bullets smaller transition=scrollVert
+!SLIDE smbullets smaller transition=scrollVert
 # Reglas de iptables por usuario de aplicacion
 
 Ejemplo de la regla por defecto de una aplicación WEB que no use una API o
@@ -82,7 +82,8 @@ servicio:
 	iptables -P OUTPUT DROP
 	iptables -P INPUT DROP
 	iptables -P FORWARD DROP
-	iptables -I INPUT -m state --ESTABLISHED,RELATED -j ACCEPT
+	iptables -I INPUT -m state --ESTABLISHED,RELATED \
+		-j ACCEPT
 	iptables -I INPUT -p tcp --dport 80 -j ACCEPT
 	iptables -I OUTPUT -m state --STATE ESTABLISHED,RELATED \
 		-j ACCEPT
