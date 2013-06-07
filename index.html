@@ -1818,8 +1818,142 @@ template "/tmp/somefile" do
     not_if "test -f /etc/passwd"
 end</code></pre>
 </div>
-</div><div class="slide" data-transition="scrollVert"><div class="content small" ref="01-chef-dev/06_recursos_chef/15">
+</div><div class="slide" data-transition="scrollVert"><div class="content bullets small" ref="01-chef-dev/06_recursos_chef/15">
 <h1>Notificaciones</h1>
+
+<p>Permite que los resources se notifiquen o suscriban a ser notificados de cambios
+en otros resources</p>
+
+<ul>
+<li>Cualquier resource puede utilizar las siguientes notificaciones
+
+<ul>
+<li><code>notifies</code>: utilizado para notificar a otros resources cambios </li>
+<li><code>subscribes</code>:  utilizado para ser notificado ante cambios en otros resources</li>
+</ul></li>
+<li>Pueden utilizarse timers
+
+<ul>
+<li><code>delayed</code>: indica que la notificaci&#xF3;n ser&#xE1; encolada i ejecutada al final de
+la cola de tareas a realizar po el Chef run </li>
+<li><code>immediately</code>: indica que la notificaci&#xF3;n deber&#xE1; correrse inmediatamente</li>
+</ul></li>
+</ul>
+</div>
+</div><div class="slide" data-transition="scrollVert"><div class="content smaller" ref="01-chef-dev/06_recursos_chef/16">
+<h1>Notificaciones</h1>
+
+<h2>La sintaxis</h2>
+
+<pre class="sh_ruby"><code>resource "name" do
+    notifies :action, "res_type[res_name]", :notif_timing
+end
+
+resource "name" do
+    subscribes :action, "res_type[res_name]", :notif_timing
+end</code></pre>
+</div>
+</div><div class="slide" data-transition="scrollVert"><div class="content smaller" ref="01-chef-dev/06_recursos_chef/17">
+<h1>Notificaciones</h1>
+
+<h2>Ejemplo de reiniciar un servicio</h2>
+
+<pre class="sh_ruby"><code>template "/etc/www/configures-apache.conf" do
+    notifies :restart, "service[apache]"
+end</code></pre>
+
+<h2>Ejemplo de notificar varios</h2>
+
+<pre class="sh_ruby"><code>template "/etc/chef/server.rb" do
+    source "server.rb.erb"
+    owner "root"
+    group "root"
+    mode "644"
+    notifies :restart, "service[chef-solr]", :delayed
+    notifies :restart, "service[chef-solr-indexer]", :delayed
+    notifies :restart, "service[chef-server]", :delayed
+end</code></pre>
+</div>
+</div><div class="slide" data-transition="scrollVert"><div class="content smbullets smaller" ref="01-chef-dev/06_recursos_chef/18">
+<h1>Resources disponibles</h1>
+
+<ul>
+<li>apt_packages</li>
+<li>bash</li>
+<li>breakpoint</li>
+<li>chef_gem</li>
+<li>cookbook_file</li>
+<li>cron</li>
+<li>csh</li>
+<li>deploy</li>
+<li>directory</li>
+<li>dpkg_package</li>
+<li>easy<em>install</em>package</li>
+<li>env</li>
+</ul>
+</div>
+</div><div class="slide" data-transition="scrollVert"><div class="content smbullets smaller" ref="01-chef-dev/06_recursos_chef/19">
+<h1>Resources disponibles</h1>
+
+<ul>
+<li>erl_call</li>
+<li>execute</li>
+<li>file</li>
+<li>freebsd_package</li>
+<li>gem_package</li>
+<li>git</li>
+<li>group</li>
+<li>htt_request</li>
+<li>ifconfig</li>
+<li>ips_package</li>
+<li>link</li>
+<li>log</li>
+<li>macports_package</li>
+</ul>
+</div>
+</div><div class="slide" data-transition="scrollVert"><div class="content smbullets smaller" ref="01-chef-dev/06_recursos_chef/20">
+<h1>Resources disponibles</h1>
+
+<ul>
+<li>mdmadm</li>
+<li>mount</li>
+<li>ohai</li>
+<li>package</li>
+<li>pacman</li>
+<li>perl</li>
+<li>portage_package</li>
+<li>powershell_script</li>
+<li>python</li>
+<li>registry_key</li>
+<li>remote_directory</li>
+<li>remote_file</li>
+<li>route</li>
+<li>rpm_package</li>
+</ul>
+</div>
+</div><div class="slide" data-transition="scrollVert"><div class="content smbullets smaller" ref="01-chef-dev/06_recursos_chef/21">
+<h1>Resources disponibles</h1>
+
+<ul>
+<li>ruby</li>
+<li>ruby_block</li>
+<li>scm</li>
+<li>script</li>
+<li>service</li>
+<li>smartos_package</li>
+<li>solaris_package</li>
+<li>subversion</li>
+<li>template</li>
+<li>user</li>
+<li>yum_package</li>
+</ul>
+</div>
+</div><div class="slide" data-transition="scrollVert"><div class="content smbullets" ref="01-chef-dev/06_recursos_chef/22">
+<h1>Resources disponibles</h1>
+
+<h2>Documentaci&#xF3;n disponible en:</h2>
+
+<p><a href="http://docs.opscode.com/resource.html">http://docs.opscode.com/resource.html</a></p>
 </div>
 </div><div class="slide" data-transition="scrollVert"><div class="content center subsection" ref="02-chef-prod/01-intro">
 <h1>TODO</h1>
