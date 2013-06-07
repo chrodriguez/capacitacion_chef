@@ -36,7 +36,7 @@
 !SLIDE commandline incremental transition=scrollVert
 # Comandos básicos
 ### Agregando al Staging Area y luego al repo local
-	$ git add README
+	$ git add README.md
 	$ git status
 	 # On branch master
 	 #

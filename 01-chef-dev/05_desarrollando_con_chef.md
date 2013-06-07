@@ -1,6 +1,155 @@
 !SLIDE subsection center transition=scrollVert
 #Desarrollando con Chef
 
+!SLIDE subsection center transition=scrollVert
+![Vagrant](vagrant.png)
+# Vagrant
+
+!SLIDE smbullets transition=scrollVert
+# Por qué Vagrant
+
+* Simplifica el manejo de ambientes de trabajo en cuanto a:
+  * Configuración
+  * Fácil replicación
+* Para ello Vagrant se sube al hombro de gigantes como:
+  * [VirtualBox](https://www.virtualbox.org/)
+  * [VMWare](http://www.vmware.com/)
+  * [AWS](http://aws.amazon.com/es/ec2/)
+
+!SLIDE smbullets small transition=scrollVert
+# Como podría ayudarnos
+* Para desarrollo
+  * Aislará dependencias de los ambientes
+  * Replicable y reproducible en instantes
+  * Una vez que alguien comparte un `Vagrantfile`, corriendo `vagrant up`
+    tenemos el ambiente listo 
+  * Si el ambiente del desarrollador es Windows, Linux o Mac, ahora es posible
+    replicar de la misma forma el ambiente tal cuel fue creado,
+independientemente de la plataforma del desarrollador
+* Para administradores
+  * Ambientes descartables
+  * Workflow consistente para el desarrollo y testeo de scripts de manejo de
+    infraestructura. 
+  * Pueden testearse *shell scripts*, *Chef Cookbooks*, *módulos de Puppet*,
+    utilizando virtualización local como VirtualBox o VMWare.
+  * Luego con la misma configuración puede testearse el ambiente en la cloud
+    como AWS o Rackspace
+
+!SLIDE smbullets transition=scrollVert
+# Qué es en criollo
+
+* Si usamos VirtualBox, `Vagrant` maneja las VMs como templates
+* Simplifica la gestión de VMs sin usar una GUI para su configuración
+* La conexión con la VM se hace a través de ssh, pero sin utilizar una IP:
+  `vagrant ssh`
+* Ante la duda del estado de la VM, con un simple `vagrant destroy` seguido de
+  un `vagrant up` volvemos al punto de partida
+
+!SLIDE smbullets transition=scrollVert
+# Cómo se instala
+
+* Hay dos variantes debido a que la última versión cambió la forma de
+  instalarlo:
+  * En la versión 1.0.X se instalaba como una *gema de ruby*
+  * En las últimas versiones se provee de un instalador
+* Usaremos la última versión: 1.2.X
+  * Descargamos la versión para nuestro Sistema desde
+    [http://downloads.vagrantup.com/](http://downloads.vagrantup.com/)
+
+!SLIDE commandline incremental smaller transition=scrollVert
+# Cómo se usa
+
+## Up and running
+
+	$ vagrant init ubuntu-1204 \
+		http://vagrantbox.desarrollo.cespi.unlp.edu.ar/pub/ubuntu-12.04.2-cespi-amd64.box
+	$ vagrant up
+
+!SLIDE transition=scrollVert
+# Cómo se usa
+
+Luego de correr los comandos anteriores, dispondremos de una máquina virtual en
+VirtualBox con Ubuntu 12.04 LTS de 32 bits. 
+
+Será posible hacer un ssh a esta máquina haciendo `vagrant ssh`
+
+Una vez que no se utilice más la VM, será posible eliminar cualquier rastro de
+la misma, utilizando `vagrant destroy`
+
+**Es probable que los comandos `vagrant up` y `vagrant ssh` no funcionen porque no se especificó la
+IP que daremos al equipo en `Vagrantfile`. Lo veremos más adelante**
+
+!SLIDE transition=scrollVert
+# Cómo se usa
+## `vagrant init [<box-name> <URL>]`
+
+Este comando corrido en un directorio, crea únicamente un archivo llamado
+`Vagrantfile`
+
+El arcihvo es código **ruby**, y es bastante claro dado que se encuentra muy
+documentado
+
+La documentación de las opciones de `Vagrantfile` puede verse [aquí](http://docs.vagrantup.com/v2/vagrantfile/machine_settings.html)
+
+!SLIDE smaller transition=scrollVert
+# Cómo se usa
+## Búsqueda del `Vagrantfile`
+
+Cuando queremos iniciar vagrant con `vagrant up`, si estamos en el directorio
+`/home/car/Trabajo/cespi/mis_vms/un_proyecto` entonces buscará en los siguientes
+directorios:
+
+	@@@ sh
+	/home/car/Trabajo/cespi/mis_vms/un_proyecto/Vagrantfile
+	/home/car/Trabajo/cespi/mis_vms/Vagrantfile
+	/home/car/Trabajo/cespi/Vagrantfile
+	/home/car/Trabajo/Vagrantfile
+	/home/car/Vagrantfile
+	/home/Vagrantfile
+	/Vagrantfile
+
+!SLIDE commandline smaller transition=scrollVert
+# Cómo se usa
+## Como se manejan los boxes
+
+	$ vagrant box list
+	$ vagrant box add name <URL>
+	$ vagrant box remove <name> provider
+
+En el ejemplo inicial:
+
+	$ vagrant init ubuntu-1204 \
+		http://vagrantbox.desarrollo.cespi.unlp.edu.ar/pub/ubuntu-12.04.2-cespi-amd64.box
+
+Se creó automáticamente el box `ubuntu-1204` luego de hacer `vagrant up`
+
+!SLIDE smbullets transition=scrollVert
+# Cómo se usa
+## Como encuentro boxes
+
+* [http://www.vagrantbox.es/](http://www.vagrantbox.es/)
+* Una creada por nosotros: 
+  * [Ubuntu 12.04 64 bits con Chef
+    11.4](vagrantbox.desarrollo.cespi.unlp.edu.ar/pub/ubuntu-12.04.2-cespi-amd64.box)
+* Creandolas a gusto con [Veewee](https://github.com/jedi4ever/veewee)
+
+!SLIDE smbullets transition=scrollVert
+# Cómo se usa
+## Aprovisionando las VMS
+
+* Con `vagrant` iniciamos una VM inmaculada tal cuál nos provee el template de
+  un `box` específico
+* Podemos aprovisionar estas máquinas instalando ambientes usando:
+  * **Chef solo** <= Es el que vamos a usar
+  * Chef client
+  * Puppet
+  * Shell scripting
+  * [Ansible](http://ansible.cc/)
+
+!SLIDE center subsection transition=scrollVert
+# Desarrollando con Chef
+*y Vagrant*
+
 !SLIDE smbullets transition=scrollVert
 # Desarrollando con Chef
 * Se respeta una filosofía muy instaurada en la comunidad Ruby
@@ -183,135 +332,12 @@ creados:
 	Last login: Thu Jun  6 16:06:44 2013 from 10.0.2.2
 	vagrant@ubuntu-12:~$ getent passwd 
 
-!SLIDE subsection center transition=scrollVert
-![Vagrant](vagrant.png)
-# Vagrant
-
-!SLIDE smbullets transition=scrollVert
-# Por qué Vagrant
-
-* Simplifica el manejo de ambientes de trabajo en cuanto a:
-  * La configuración
-  * Lo fácil de su replicación
-* Para ello Vagrant se sube al hombro de gigantes como:
-  * [VirtualBox](https://www.virtualbox.org/)
-  * [VMWare](http://www.vmware.com/)
-  * [AWS](http://aws.amazon.com/es/ec2/)
-
-!SLIDE smbullets small transition=scrollVert
-# Como podría ayudarnos
-* Para desarrollo
-  * Aislará dependencias en un ambiente aislado
-  * Replicable y reproducible en instantes
-  * Una vez que alguien crea un `Vagrantfile`, solo hay que correr `vagrant up`
-  * Si el ambiente del desarrollador es Windows, Linux o Mac, luego se permite
-    replicar de la misma forma el ambiente tal cuel fue creado
-* Para administardores
-  * Ambientes descartables
-  * Workflow consistente para el desarrollo y testeo de scripts de manejo de
-    infraestructura. 
-  * Pueden testearse *shell scripts*, *Chef Cookbooks*, *módulos de Puppet*,
-    utilizando virtualización local como VirtualBox o VMWare.
-  * Luego con la misma configuración puede testearse el ambiente en la cloud
-    como AWS o Rackspace
-
-!SLIDE smbullets transition=scrollVert
-# Qué es en criollo
-
-* Si usamos VirtualBox, nos maneja las VMs como templates
-* Maneja de forma simple y sin GUI la configuración de la red
-* La conexión con la VM se hace a través de ssh, pero sin utilizar una IP:
-  `vagrant ssh`
-* Ante la duda del estado de la VM, con un simple `vagrant destroy` seguido de
-  un `vagrant up` volvemos al punto de partida
-
-!SLIDE smbullets transition=scrollVert
-# Cómo se instala
-
-* Hay dos variantes debido a que la última versión cambió la forma de
-  instalarlo:
-  * En la versión 1.0.X se instalaba como una *gema de ruby*
-  * En las últimas versiones se provee de un instalador
-* Usaremos la última versión 1.2.X
-  * Descargamos la versión para nuestro Sistema desde
-    [http://downloads.vagrantup.com/](http://downloads.vagrantup.com/)
-
 !SLIDE commandline incremental transition=scrollVert
-# Cómo se usa
+# Descargar el ejemplo
+## Para descargar el ejemplo dado
 
-## Up and running
+	$ git clone https://github.com/chrodriguez/capacitacion_chef.git
+	$ cd capacitacion_chef 
+	$ cd samples/01-chef-dev/01-mi-primer-recipe/prueba_chef
 
-	$ vagrant init precise32 http://files.vagrantup.com/precise32.box
-	$ vagrant up
-
-!SLIDE transition=scrollVert
-# Cómo se usa
-
-Luego de correr los comandos anteriores, dispondremos de una máquina virtual en
-VirtualBox con Ubuntu 12.04 LTS de 32 bits. 
-
-Será posible hacer un ssh a esta máquina haciendo `vagrant ssh`
-
-Una vez que no se utilice más la VM, será posible eliminar cualquier rastro de
-la misma, utilizando `vagrant destroy`
-
-!SLIDE transition=scrollVert
-# Cómo se usa
-## `vagrant init`
-
-Este comando corrido en un directorio, crea únicamente un archivo llamado
-`Vagrantfile`
-
-El arcihvo es código **ruby**, y es bastante claro dado que se encuentra muy
-documentado
-
-La documentación de las opciones de `Vagrantfile` puede verse [aquí](http://docs.vagrantup.com/v2/vagrantfile/machine_settings.html)
-
-!SLIDE smaller transition=scrollVert
-# Cómo se usa
-## Búsqueda del `Vagrantfile`
-
-Cuando queremos iniciar vagrant con `vagrant up`, si estamos en el directorio
-`/home/car/Trabajo/cespi/mis_vms/un_proyecto` entonces buscará en los siguientes
-directorios:
-
-	@@@ sh
-	/home/car/Trabajo/cespi/mis_vms/un_proyecto/Vagrantfile
-	/home/car/Trabajo/cespi/mis_vms/Vagrantfile
-	/home/car/Trabajo/cespi/Vagrantfile
-	/home/car/Trabajo/Vagrantfile
-	/home/car/Vagrantfile
-	/home/Vagrantfile
-	/Vagrantfile
-
-!SLIDE commandline transition=scrollVert
-# Cómo se usa
-## Como se manejan los boxes
-
-	$ vagrant box list
-	$ vagrant box add name <URL>
-	$ vagrant box remove <name> provider
-
-!SLIDE smbullets transition=scrollVert
-# Cómo se usa
-## Como encuentro boxes
-
-* [http://www.vagrantbox.es/](http://www.vagrantbox.es/)
-* Una creada por nosotros: 
-  * [Ubuntu 12.04 64 bits con Chef
-    11.4](vagrantbox.desarrollo.cespi.unlp.edu.ar/pub/ubuntu-12.04.2-cespi-amd64.box)
-* Creandolas a gusto con [Veewee](https://github.com/jedi4ever/veewee)
-
-!SLIDE smbullets transition=scrollVert
-# Cómo se usa
-## Aprovisionando las VMS
-
-* Con `vagrant` iniciamos una VM inmaculada tal cuál nos provee el template de
-  un `box` específico
-* Podemos aprovisionar estas máquinas instalando ambientes usando:
-  * **Chef solo** <= Es el que vamos a usar
-  * Chef client
-  * Puppet
-  * Shell scripting
-  * [Ansible](http://ansible.cc/)
 

@@ -427,7 +427,7 @@ Actualizamos el proyecto:
 
 	$ bundle  # o bundle install o bundle update
 
-!SLIDE commandline transition=scrollVert 
+!SLIDE commandline small transition=scrollVert 
 # Uso de bundler
 ## Usando la Gema
 Y ahora podemos crear un script ruby `test.rb`:
@@ -438,6 +438,8 @@ Y ahora podemos crear un script ruby `test.rb`:
 	puts "this is red".foreground(:red) 
 	puts "this on yellow bg".background(:yellow)
 	puts "even bright underlined!".underline.bright
+
+*En el ejemplo hay que eliminar el comentario `#` dejando sólo `require 'rainbow'`*
 
 Para correrlo es *IMPORTANTE*:
 
