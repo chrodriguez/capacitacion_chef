@@ -173,5 +173,119 @@ default
 		not_if "test -f /etc/passwd"
 	end
 
-!SLIDE small transition=scrollVert
+!SLIDE bullets small transition=scrollVert
 # Notificaciones
+
+Permite que los resources se notifiquen o suscriban a ser notificados de cambios
+en otros resources
+
+* Cualquier resource puede utilizar las siguientes notificaciones
+  * `notifies`: utilizado para notificar a otros resources cambios 
+  * `subscribes`:  utilizado para ser notificado ante cambios en otros resources
+* Pueden utilizarse timers
+  * `delayed`: indica que la notificación será encolada i ejecutada al final de
+    la cola de tareas a realizar po el Chef run 
+  * `immediately`: indica que la notificación deberá correrse inmediatamente
+
+!SLIDE smaller transition=scrollVert
+# Notificaciones
+## La sintaxis
+
+	@@@ ruby
+	resource "name" do
+		notifies :action, "res_type[res_name]", :notif_timing
+	end
+
+	resource "name" do
+		subscribes :action, "res_type[res_name]", :notif_timing
+	end
+
+!SLIDE smaller transition=scrollVert
+# Notificaciones
+## Ejemplo de reiniciar un servicio 
+
+	@@@ ruby
+	template "/etc/www/configures-apache.conf" do
+		notifies :restart, "service[apache]"
+	end
+
+## Ejemplo de notificar varios
+	@@@ ruby
+	template "/etc/chef/server.rb" do
+		source "server.rb.erb"
+		owner "root"
+		group "root"
+		mode "644"
+		notifies :restart, "service[chef-solr]", :delayed
+		notifies :restart, "service[chef-solr-indexer]", :delayed
+		notifies :restart, "service[chef-server]", :delayed
+	end
+
+!SLIDE smbullets smaller transition=scrollVert
+# Resources disponibles
+* apt_packages
+* bash
+* breakpoint
+* chef_gem
+* cookbook_file
+* cron
+* csh
+* deploy
+* directory
+* dpkg_package
+* easy_install_package
+* env
+
+!SLIDE smbullets smaller transition=scrollVert
+# Resources disponibles
+* erl_call
+* execute
+* file
+* freebsd_package
+* gem_package
+* git
+* group
+* htt_request
+* ifconfig
+* ips_package
+* link
+* log
+* macports_package
+
+!SLIDE smbullets smaller transition=scrollVert
+# Resources disponibles
+* mdmadm
+* mount
+* ohai
+* package
+* pacman
+* perl
+* portage_package
+* powershell_script
+* python
+* registry_key
+* remote_directory
+* remote_file
+* route
+* rpm_package
+
+!SLIDE smbullets smaller transition=scrollVert
+# Resources disponibles
+* ruby
+* ruby_block
+* scm
+* script
+* service
+* smartos_package
+* solaris_package
+* subversion
+* template
+* user
+* yum_package
+
+!SLIDE smbullets transition=scrollVert
+# Resources disponibles
+## Documentación disponible en:
+
+[http://docs.opscode.com/resource.html](http://docs.opscode.com/resource.html)
+

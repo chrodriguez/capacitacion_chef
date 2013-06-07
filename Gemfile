@@ -3,3 +3,4 @@ source "https://rubygems.org"
 
 gem "gli"
 gem "showoff", git: 'git://github.com/schacon/showoff.git'
+gem 'pdfkit'
