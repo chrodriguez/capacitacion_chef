@@ -12,8 +12,10 @@
   * Material de Ruby
 * GIT
 * Desarrollando con chef
-  * Recursos
+  * Estructura de directorios
+  * Cookbooks y recipes
   * Vagrant
+  * Recursos
   * Berkshelf
   * Ciclo de desarrollo en Chef
   * Amazon EC2
