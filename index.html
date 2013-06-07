@@ -498,8 +498,11 @@ convenciones</li>
 <li>Desarrollando con chef
 
 <ul>
-<li>Recursos</li>
 <li>Vagrant</li>
+<li>Estructura de directorios</li>
+<li>Cookbooks y recipes</li>
+<li>Resources y Providers</li>
+<li>Un recipe para ntp</li>
 <li>Berkshelf</li>
 <li>Ciclo de desarrollo en Chef</li>
 <li>Amazon EC2</li>
@@ -1019,7 +1022,7 @@ utilizaremos en este proyecto, considerando incluso ambientes: <em>desarrollo</e
 <pre><code><code class="command">$ bundle  # o bundle install o bundle update</code>
 </code></pre>
 </div>
-</div><div class="slide" data-transition="scrollVert"><div class="content commandline" ref="01-chef-dev/03_ruby/26">
+</div><div class="slide" data-transition="scrollVert"><div class="content commandline small" ref="01-chef-dev/03_ruby/26">
 <h1>Uso de bundler</h1>
 
 <h2>Usando la Gema</h2>
@@ -1031,6 +1034,8 @@ utilizaremos en este proyecto, considerando incluso ambientes: <em>desarrollo</e
 puts "this is red".foreground(:red) 
 puts "this on yellow bg".background(:yellow)
 puts "even bright underlined!".underline.bright</code></code></pre>
+
+<p><em>En el ejemplo hay que eliminar el comentario <code>#</code> dejando s&#xF3;lo <code>require 'rainbow'</code></em></p>
 
 <p>Para correrlo es <em>IMPORTANTE</em>:</p>
 
@@ -1101,7 +1106,7 @@ edition)</a></li>
 
 <h3>Agregando al Staging Area y luego al repo local</h3>
 
-<pre><code><code class="command">$ git add README</code>
+<pre><code><code class="command">$ git add README.md</code>
 <code class="command">$ git status</code>
 <code class="result"> # On branch master
  #
@@ -1186,7 +1191,203 @@ compartir repositorios
 </div><div class="slide" data-transition="scrollVert"><div class="content subsection center" ref="01-chef-dev/05_desarrollando_con_chef/1">
 <h1>Desarrollando con Chef</h1>
 </div>
-</div><div class="slide" data-transition="scrollVert"><div class="content smbullets" ref="01-chef-dev/05_desarrollando_con_chef/2">
+</div><div class="slide" data-transition="scrollVert"><div class="content subsection center" ref="01-chef-dev/05_desarrollando_con_chef/2">
+<p><img src="./file/01-chef-dev/vagrant.png" alt="Vagrant"/>
+
+<h1>Vagrant</h1>
+</p>
+</div>
+</div><div class="slide" data-transition="scrollVert"><div class="content smbullets" ref="01-chef-dev/05_desarrollando_con_chef/3">
+<h1>Por qu&#xE9; Vagrant</h1>
+
+<ul>
+<li>Simplifica el manejo de ambientes de trabajo en cuanto a:
+
+<ul>
+<li>Configuraci&#xF3;n</li>
+<li>F&#xE1;cil replicaci&#xF3;n</li>
+</ul></li>
+<li>Para ello Vagrant se sube al hombro de gigantes como:
+
+<ul>
+<li><a href="https://www.virtualbox.org/">VirtualBox</a></li>
+<li><a href="http://www.vmware.com/">VMWare</a></li>
+<li><a href="http://aws.amazon.com/es/ec2/">AWS</a></li>
+</ul></li>
+</ul>
+</div>
+</div><div class="slide" data-transition="scrollVert"><div class="content smbullets small" ref="01-chef-dev/05_desarrollando_con_chef/4">
+<h1>Como podr&#xED;a ayudarnos</h1>
+
+<ul>
+<li>Para desarrollo
+
+<ul>
+<li>Aislar&#xE1; dependencias de los ambientes</li>
+<li>Replicable y reproducible en instantes</li>
+<li>Una vez que alguien comparte un <code>Vagrantfile</code>, corriendo <code>vagrant up</code>
+tenemos el ambiente listo </li>
+<li>Si el ambiente del desarrollador es Windows, Linux o Mac, ahora es posible
+replicar de la misma forma el ambiente tal cuel fue creado,
+independientemente de la plataforma del desarrollador</li>
+</ul></li>
+<li>Para administradores
+
+<ul>
+<li>Ambientes descartables</li>
+<li>Workflow consistente para el desarrollo y testeo de scripts de manejo de
+infraestructura. </li>
+<li>Pueden testearse <em>shell scripts</em>, <em>Chef Cookbooks</em>, <em>m&#xF3;dulos de Puppet</em>,
+utilizando virtualizaci&#xF3;n local como VirtualBox o VMWare.</li>
+<li>Luego con la misma configuraci&#xF3;n puede testearse el ambiente en la cloud
+como AWS o Rackspace</li>
+</ul></li>
+</ul>
+</div>
+</div><div class="slide" data-transition="scrollVert"><div class="content smbullets" ref="01-chef-dev/05_desarrollando_con_chef/5">
+<h1>Qu&#xE9; es en criollo</h1>
+
+<ul>
+<li>Si usamos VirtualBox, <code>Vagrant</code> maneja las VMs como templates</li>
+<li>Simplifica la gesti&#xF3;n de VMs sin usar una GUI para su configuraci&#xF3;n</li>
+<li>La conexi&#xF3;n con la VM se hace a trav&#xE9;s de ssh, pero sin utilizar una IP:
+<code>vagrant ssh</code></li>
+<li>Ante la duda del estado de la VM, con un simple <code>vagrant destroy</code> seguido de
+un <code>vagrant up</code> volvemos al punto de partida</li>
+</ul>
+</div>
+</div><div class="slide" data-transition="scrollVert"><div class="content smbullets" ref="01-chef-dev/05_desarrollando_con_chef/6">
+<h1>C&#xF3;mo se instala</h1>
+
+<ul>
+<li>Hay dos variantes debido a que la &#xFA;ltima versi&#xF3;n cambi&#xF3; la forma de
+instalarlo:
+
+<ul>
+<li>En la versi&#xF3;n 1.0.X se instalaba como una <em>gema de ruby</em></li>
+<li>En las &#xFA;ltimas versiones se provee de un instalador</li>
+</ul></li>
+<li>Usaremos la &#xFA;ltima versi&#xF3;n: 1.2.X
+
+<ul>
+<li>Descargamos la versi&#xF3;n para nuestro Sistema desde
+<a href="http://downloads.vagrantup.com/">http://downloads.vagrantup.com/</a></li>
+</ul></li>
+</ul>
+</div>
+</div><div class="slide" data-transition="scrollVert"><div class="content commandline incremental smaller" ref="01-chef-dev/05_desarrollando_con_chef/7">
+<h1>C&#xF3;mo se usa</h1>
+
+<h2>Up and running</h2>
+
+<pre><code><code class="command">$ vagrant init ubuntu-1204 \
+    http://vagrantbox.desarrollo.cespi.unlp.edu.ar/pub/ubuntu-12.04.2-cespi-amd64.box</code>
+<code class="command">$ vagrant up</code>
+</code></pre>
+</div>
+</div><div class="slide" data-transition="scrollVert"><div class="content" ref="01-chef-dev/05_desarrollando_con_chef/8">
+<h1>C&#xF3;mo se usa</h1>
+
+<p>Luego de correr los comandos anteriores, dispondremos de una m&#xE1;quina virtual en
+VirtualBox con Ubuntu 12.04 LTS de 32 bits. </p>
+
+<p>Ser&#xE1; posible hacer un ssh a esta m&#xE1;quina haciendo <code>vagrant ssh</code></p>
+
+<p>Una vez que no se utilice m&#xE1;s la VM, ser&#xE1; posible eliminar cualquier rastro de
+la misma, utilizando <code>vagrant destroy</code></p>
+
+<p><strong>Es probable que los comandos <code>vagrant up</code> y <code>vagrant ssh</code> no funcionen porque no se especific&#xF3; la
+IP que daremos al equipo en <code>Vagrantfile</code>. Lo veremos m&#xE1;s adelante</strong></p>
+</div>
+</div><div class="slide" data-transition="scrollVert"><div class="content" ref="01-chef-dev/05_desarrollando_con_chef/9">
+<h1>C&#xF3;mo se usa</h1>
+
+<h2><code>vagrant init [&lt;box-name&gt; &lt;URL&gt;]</code></h2>
+
+<p>Este comando corrido en un directorio, crea &#xFA;nicamente un archivo llamado
+<code>Vagrantfile</code></p>
+
+<p>El arcihvo es c&#xF3;digo <strong>ruby</strong>, y es bastante claro dado que se encuentra muy
+documentado</p>
+
+<p>La documentaci&#xF3;n de las opciones de <code>Vagrantfile</code> puede verse <a href="http://docs.vagrantup.com/v2/vagrantfile/machine_settings.html">aqu&#xED;</a></p>
+</div>
+</div><div class="slide" data-transition="scrollVert"><div class="content smaller" ref="01-chef-dev/05_desarrollando_con_chef/10">
+<h1>C&#xF3;mo se usa</h1>
+
+<h2>B&#xFA;squeda del <code>Vagrantfile</code></h2>
+
+<p>Cuando queremos iniciar vagrant con <code>vagrant up</code>, si estamos en el directorio
+<code>/home/car/Trabajo/cespi/mis_vms/un_proyecto</code> entonces buscar&#xE1; en los siguientes
+directorios:</p>
+
+<pre class="sh_sh"><code>/home/car/Trabajo/cespi/mis_vms/un_proyecto/Vagrantfile
+/home/car/Trabajo/cespi/mis_vms/Vagrantfile
+/home/car/Trabajo/cespi/Vagrantfile
+/home/car/Trabajo/Vagrantfile
+/home/car/Vagrantfile
+/home/Vagrantfile
+/Vagrantfile</code></pre>
+</div>
+</div><div class="slide" data-transition="scrollVert"><div class="content commandline smaller" ref="01-chef-dev/05_desarrollando_con_chef/11">
+<h1>C&#xF3;mo se usa</h1>
+
+<h2>Como se manejan los boxes</h2>
+
+<pre><code><code class="command">$ vagrant box list</code>
+<code class="command">$ vagrant box add name &lt;URL&gt;</code>
+<code class="command">$ vagrant box remove &lt;name&gt; provider</code>
+</code></pre>
+
+<p>En el ejemplo inicial:</p>
+
+<pre><code><code class="command">$ vagrant init ubuntu-1204 \
+    http://vagrantbox.desarrollo.cespi.unlp.edu.ar/pub/ubuntu-12.04.2-cespi-amd64.box</code>
+</code></pre>
+
+<p>Se cre&#xF3; autom&#xE1;ticamente el box <code>ubuntu-1204</code> luego de hacer <code>vagrant up</code></p>
+</div>
+</div><div class="slide" data-transition="scrollVert"><div class="content smbullets" ref="01-chef-dev/05_desarrollando_con_chef/12">
+<h1>C&#xF3;mo se usa</h1>
+
+<h2>Como encuentro boxes</h2>
+
+<ul>
+<li><a href="http://www.vagrantbox.es/">http://www.vagrantbox.es/</a></li>
+<li>Una creada por nosotros: 
+
+<ul>
+<li><a href="vagrantbox.desarrollo.cespi.unlp.edu.ar/pub/ubuntu-12.04.2-cespi-amd64.box">Ubuntu 12.04 64 bits con Chef
+11.4</a></li>
+</ul></li>
+<li>Creandolas a gusto con <a href="https://github.com/jedi4ever/veewee">Veewee</a></li>
+</ul>
+</div>
+</div><div class="slide" data-transition="scrollVert"><div class="content smbullets" ref="01-chef-dev/05_desarrollando_con_chef/13">
+<h1>C&#xF3;mo se usa</h1>
+
+<h2>Aprovisionando las VMS</h2>
+
+<ul>
+<li>Con <code>vagrant</code> iniciamos una VM inmaculada tal cu&#xE1;l nos provee el template de
+un <code>box</code> espec&#xED;fico</li>
+<li>Podemos aprovisionar estas m&#xE1;quinas instalando ambientes usando:
+
+<ul>
+<li><strong>Chef solo</strong> &lt;= Es el que vamos a usar</li>
+<li>Chef client</li>
+<li>Puppet</li>
+<li>Shell scripting</li>
+<li><a href="http://ansible.cc/">Ansible</a></li>
+</ul></li>
+</ul>
+</div>
+</div><div class="slide" data-transition="scrollVert"><div class="content center subsection" ref="01-chef-dev/05_desarrollando_con_chef/14">
+<h1>Desarrollando con Chef</h1>
+
+<p><em>y Vagrant</em></p>
+</div>
+</div><div class="slide" data-transition="scrollVert"><div class="content smbullets" ref="01-chef-dev/05_desarrollando_con_chef/15">
 <h1>Desarrollando con Chef</h1>
 
 <ul>
@@ -1198,7 +1399,7 @@ compartir repositorios
 <li>Todos los cookbooks tienen la misma estructura</li>
 </ul>
 </div>
-</div><div class="slide" data-transition="scrollVert"><div class="content commandline" ref="01-chef-dev/05_desarrollando_con_chef/3">
+</div><div class="slide" data-transition="scrollVert"><div class="content commandline" ref="01-chef-dev/05_desarrollando_con_chef/16">
 <h1>Estructura de un cookbook</h1>
 
 <pre><code><code class="command">$ tree -d mis_cookbooks/mi_cookbook</code>
@@ -1212,7 +1413,7 @@ compartir repositorios
  &#x2514;&#x2500;&#x2500; templates
 </code></code></pre>
 </div>
-</div><div class="slide" data-transition="scrollVert"><div class="content smbullets small" ref="01-chef-dev/05_desarrollando_con_chef/4">
+</div><div class="slide" data-transition="scrollVert"><div class="content smbullets small" ref="01-chef-dev/05_desarrollando_con_chef/17">
 <h1>Estructura de un cookbook</h1>
 
 <ul>
@@ -1223,9 +1424,10 @@ compartir repositorios
 <li><strong>recipe[ntp]:</strong> <code>mis_cookbooks/ntp/recipes/default.rb</code></li>
 </ul></li>
 <li>El nombre de un recipe debe especificar el nombre del cookbook definendo as&#xED; un <strong>namespace</strong></li>
+<li>El caso <strong>recipe[ntp]</strong> es equivalente a utilizar <strong>recipe[ntp::default]</strong></li>
 </ul>
 </div>
-</div><div class="slide" data-transition="scrollVert"><div class="content commandline incremental" ref="01-chef-dev/05_desarrollando_con_chef/5">
+</div><div class="slide" data-transition="scrollVert"><div class="content commandline incremental" ref="01-chef-dev/05_desarrollando_con_chef/18">
 <h1>Mi primer recipe</h1>
 
 <p>Creamos el directorio para el <code>cookbook</code> y <code>recipe</code></p>
@@ -1233,7 +1435,7 @@ compartir repositorios
 <pre><code><code class="command">$ mkdir -p prueba_chef/cookbooks/test/recipes</code>
 </code></pre>
 </div>
-</div><div class="slide" data-transition="scrollVert"><div class="content small" ref="01-chef-dev/05_desarrollando_con_chef/6">
+</div><div class="slide" data-transition="scrollVert"><div class="content small" ref="01-chef-dev/05_desarrollando_con_chef/19">
 <h1>Mi primer recipe</h1>
 
 <p>Creamos el archivo <code>prueba_chef/cookbooks/test/recipes/default.rb</code> con el siguiente contenido:</p>
@@ -1246,7 +1448,7 @@ compartir repositorios
   #   openssl passwd -1 "pass_de_ejemplo"
 end</code></pre>
 </div>
-</div><div class="slide" data-transition="scrollVert"><div class="content commandline incremental smaller" ref="01-chef-dev/05_desarrollando_con_chef/7">
+</div><div class="slide" data-transition="scrollVert"><div class="content commandline incremental smaller" ref="01-chef-dev/05_desarrollando_con_chef/20">
 <h1>Lo probamos usando Vagrant</h1>
 
 <p>Ubicados dentro del directorio raiz <code>prueba_chef/</code> corremos</p>
@@ -1259,7 +1461,7 @@ the comments in the Vagrantfile as well as documentation on
 `vagrantup.com` for more information on using Vagrant.
 </code></code></pre>
 </div>
-</div><div class="slide" data-transition="scrollVert"><div class="content smaller" ref="01-chef-dev/05_desarrollando_con_chef/8">
+</div><div class="slide" data-transition="scrollVert"><div class="content smaller" ref="01-chef-dev/05_desarrollando_con_chef/21">
 <h1>Lo probamos usando Vagrant</h1>
 
 <h2>Editamos el archivo generado</h2>
@@ -1272,7 +1474,7 @@ the comments in the Vagrantfile as well as documentation on
     config.vm.network :private_network, ip: "33.33.33.100"
 end</code></pre>
 </div>
-</div><div class="slide" data-transition="scrollVert"><div class="content commandline incremental" ref="01-chef-dev/05_desarrollando_con_chef/9">
+</div><div class="slide" data-transition="scrollVert"><div class="content commandline incremental" ref="01-chef-dev/05_desarrollando_con_chef/22">
 <h1>Lo probamos usando Vagrant</h1>
 
 <p>Ahora podemos iniciar la m&#xE1;quina con vagrant</p>
@@ -1304,7 +1506,7 @@ Successfully added box 'opscode-ubuntu-1204' with provider 'virtualbox'!
 [default] -- /vagrant
 </code></code></pre>
 </div>
-</div><div class="slide" data-transition="scrollVert"><div class="content commandline incremental" ref="01-chef-dev/05_desarrollando_con_chef/10">
+</div><div class="slide" data-transition="scrollVert"><div class="content commandline incremental" ref="01-chef-dev/05_desarrollando_con_chef/23">
 <h1>Lo probamos usando Vagrant</h1>
 
 <p>Nos conectamos a la consola de la m&#xE1;quina creada y verificamos los usuarios
@@ -1318,7 +1520,7 @@ Last login: Thu Jun  6 16:06:44 2013 from 10.0.2.2
 vagrant@ubuntu-12:~$ getent passwd 
 </code></code></pre>
 </div>
-</div><div class="slide" data-transition="scrollVert"><div class="content smaller" ref="01-chef-dev/05_desarrollando_con_chef/11">
+</div><div class="slide" data-transition="scrollVert"><div class="content smaller" ref="01-chef-dev/05_desarrollando_con_chef/24">
 <h1>Lo probamos usando Vagrant</h1>
 
 <h2>Probemos la receta</h2>
@@ -1336,7 +1538,7 @@ con <strong>chef</strong>. El archivo deber&#xE1; quedar:</p>
   end
 end</code></pre>
 </div>
-</div><div class="slide" data-transition="scrollVert"><div class="content smaller" ref="01-chef-dev/05_desarrollando_con_chef/12">
+</div><div class="slide" data-transition="scrollVert"><div class="content smaller" ref="01-chef-dev/05_desarrollando_con_chef/25">
 <h1>Lo probamos usando Vagrant</h1>
 
 <h2>Probemos la receta</h2>
@@ -1365,6 +1567,259 @@ ubuntu-12.04.2-cespi-amd64
 ...
 ...
 </code></pre>
+</div>
+</div><div class="slide" data-transition="scrollVert"><div class="content center" ref="01-chef-dev/05_desarrollando_con_chef/26">
+<p><img src="./file/01-chef-dev/guauuu.jpg" alt="Guauuuu"/>
+</p>
+</div>
+</div><div class="slide" data-transition="scrollVert"><div class="content commandline incremental" ref="01-chef-dev/05_desarrollando_con_chef/27">
+<h1>Verificamos que Chef hizo lo que deb&#xED;a</h1>
+
+<p>Nos conectamos a la consola de la m&#xE1;quina creada y verificamos los usuarios
+creados:</p>
+
+<pre><code><code class="command">$ vagrant ssh</code>
+<code class="result">Welcome to Ubuntu 12.04.2 LTS (GNU/Linux 3.5.0-23-generic x86_64)
+
+ * Documentation:  https://help.ubuntu.com/
+Last login: Thu Jun  6 16:06:44 2013 from 10.0.2.2
+vagrant@ubuntu-12:~$ getent passwd 
+</code></code></pre>
+</div>
+</div><div class="slide" data-transition="scrollVert"><div class="content commandline incremental" ref="01-chef-dev/05_desarrollando_con_chef/28">
+<h1>Descargar el ejemplo</h1>
+
+<h2>Para descargar el ejemplo dado</h2>
+
+<pre><code><code class="command">$ git clone https://github.com/chrodriguez/capacitacion_chef.git</code>
+<code class="command">$ cd capacitacion_chef </code>
+<code class="command">$ cd samples/01-chef-dev/01-mi-primer-recipe/prueba_chef</code>
+</code></pre>
+</div>
+</div><div class="slide" data-transition="scrollVert"><div class="content subsection center" ref="01-chef-dev/06_recursos_chef/1">
+<h1>Resources en Chef</h1>
+</div>
+</div><div class="slide" data-transition="scrollVert"><div class="content smbullets small" ref="01-chef-dev/06_recursos_chef/2">
+<h1>Resources en Chef</h1>
+
+<ul>
+<li>Son la parte <strong>fundamental</strong> de los recipes</li>
+<li>Define las acciones a tomar:
+
+<ul>
+<li>Cu&#xE1;ndo instalar un paquete</li>
+<li>Cu&#xE1;ndo un servicio debe iniciarse o reiniciarse</li>
+<li>Qu&#xE9; usuarios, grupos o membres&#xED;as deben crearse</li>
+</ul></li>
+<li>Cuando Chef corre, cada resource es identificado y asociado con un <strong>provider</strong>
+
+<ul>
+<li>El proveedor es quien realiza el trabajo que define el resource</li>
+</ul></li>
+<li>Chef <strong>asegura</strong> que:
+
+<ul>
+<li>Las mismas acciones son realizadas de la misma forma cada vez </li>
+<li>Las acciones siempre producen los mismos resultados</li>
+</ul></li>
+</ul>
+</div>
+</div><div class="slide" data-transition="scrollVert"><div class="content smbullets" ref="01-chef-dev/06_recursos_chef/3">
+<h1>Resources en Chef</h1>
+
+<ul>
+<li>Los resources se implementan dentro de recipes usando ruby</li>
+<li>Un resource representa alguna parte del sistema (y su estado deseado)
+
+<ul>
+<li>Un provider ofrece las herramientas para llevar a &#xE9;sta parte del sistema desde
+su estado actual, al estado deseado</li>
+</ul></li>
+<li>A partir de <a href="http://docs.opscode.com/ohai.html">Ohai</a> (herramienta utilizada
+para detectar propiedades de un sistema como procesador, plataforma, SO,
+memoria, etc):
+
+<ul>
+<li>Chef verifica <code>platform</code> y <code>platform_version</code> para identificar el provider
+adecuado </li>
+</ul></li>
+</ul>
+</div>
+</div><div class="slide" data-transition="scrollVert"><div class="content smaller" ref="01-chef-dev/06_recursos_chef/4">
+<h1>Resources en Chef</h1>
+
+<h2>Ejemplo de un resource</h2>
+
+<pre class="sh_ruby"><code>directory "/tmp/folder" do
+  owner "root"
+  group "root"
+  mode 0755
+  action :create
+end</code></pre>
+
+<ul>
+<li>Chef buscar&#xE1; el provider para <code>directory resource</code> que en este caso es
+<code>Chef::Provider::Directory</code></li>
+<li>En base al resource mostrado, que resulta llamarse <code>directory["/tmp/folder"]</code>
+
+<ul>
+<li>Analiza el estado actual del recurso</li>
+<li>Realiza la acci&#xF3;n mencionada: <code>:create</code></li>
+</ul></li>
+<li>Si el directorio ya exist&#xED;a, no hace nada, sino lo crear&#xE1; con los permisos,
+due&#xF1;o y grupo mencionados</li>
+</ul>
+</div>
+</div><div class="slide" data-transition="scrollVert"><div class="content smbullets" ref="01-chef-dev/06_recursos_chef/5">
+<h1>Resources en Chef</h1>
+
+<h2>O sea...</h2>
+
+<ul>
+<li>Los recursos son parte de la DSL de Chef</li>
+<li>Se van a usar de la forma mostrada con el ejemplo <code>directory</code>, como si fuesen un bloque de ruby</li>
+<li>Dentro del bloque del resource, se especificar&#xE1;n los atributos que defina ese
+resource</li>
+<li>El provider har&#xE1; su trabajo de forma m&#xE1;gica</li>
+</ul>
+</div>
+</div><div class="slide" data-transition="scrollVert"><div class="content smbullets" ref="01-chef-dev/06_recursos_chef/6">
+<h1>Funcionalidad com&#xFA;n de todos los resources</h1>
+
+<h2>Acciones</h2>
+
+<ul>
+<li>Todos los recursos admitir&#xE1;n acciones a trav&#xE9;s del atributo <code>action</code>.</li>
+<li>Todos los resources soportan el <strong>action</strong> <code>:nothing</code>
+
+<ul>
+<li>Se utiliza para especificar que el recurso no hace nada. En ausencia de otra
+acci&#xF3;n espeficada para un resource por defecto, se utiliza <code>:nothing</code> por
+default</li>
+</ul></li>
+</ul>
+</div>
+</div><div class="slide" data-transition="scrollVert"><div class="content smbullets" ref="01-chef-dev/06_recursos_chef/7">
+<h1>Ejemplo de uso de action</h1>
+
+<h2>Ejemplo de uso del action <code>:nothing</code></h2>
+
+<pre class="sh_ruby"><code>service "memcached" do
+    action :nothing
+    supports {
+        :status =&gt; true, 
+        :start =&gt; true, 
+        :stop =&gt; true, 
+        :restart =&gt; true
+    }
+end</code></pre>
+</div>
+</div><div class="slide" data-transition="scrollVert"><div class="content smbullets smaller" ref="01-chef-dev/06_recursos_chef/8">
+<h1>M&#xE1;s funcionalidad com&#xFA;n de todos los resources</h1>
+
+<ul>
+<li><code>ignore_failure</code>: utilizado para que la ejecuci&#xF3;n de un recipe contin&#xFA;e incluso ante la falla del recurso. Su valor por defecto es <code>false</code></li>
+<li><code>provider</code>: utilizado para especificar el provder. Generalmente no es necesario. El nombre debe ser el nombre copleto de la clase que lo implementa. Por ejemplo: <code>provider Chef::Provider::Long::Name</code>. </li>
+<li><code>retries</code>: usado para especificar el n&#xFA;mero de veces que debe catchearse excepciones y reintentar con el resource.. El valor por defecto es <code>0</code></li>
+<li><code>retry_delay</code>: usado para especificar el delay de retardo entre reintentos en segundos. El valor por defecto es: <code>2</code></li>
+<li><code>supports</code>: usado para especificar un Hash de opciones que contienen los <em>hints</em> sobre las capacidades del resource. Chef puede itilizar estos <em>hints</em> para ayudarse a identificar el provider adecuado. Este atributo lo utiliza una peque&#xF1;a cantidad de providers, incluyendo <em>users</em> y <em>service</em>.</li>
+</ul>
+</div>
+</div><div class="slide" data-transition="scrollVert"><div class="content small" ref="01-chef-dev/06_recursos_chef/9">
+<h1>Ejemplo de uso de action</h1>
+
+<h2>Ejemplo de ignore failure</h2>
+
+<pre class="sh_ruby"><code>gem_package "syntax" do
+    action :install
+    ignore_failure true
+end</code></pre>
+
+<h2>Ejemplo de provider</h2>
+
+<pre class="sh_ruby"><code>package "some_package" do
+    provider Chef::Provider::Package::Rubygems
+end</code></pre>
+</div>
+</div><div class="slide" data-transition="scrollVert"><div class="content smbullets" ref="01-chef-dev/06_recursos_chef/10">
+<h1>Ejecuci&#xF3;n condicional</h1>
+
+<ul>
+<li>La ejecuci&#xF3;n condicional permite agregar guardas a la ejecuci&#xF3;n de un resource</li>
+<li>Esto permite agergar condiciones antes de ejecutar el resource</li>
+<li>La raz&#xF3;n de ser de esto, es que debemos garantizar que la ejecuci&#xF3;n de un resource <strong>siempre</strong> produce el mismo resultado</li>
+<li>La condici&#xF3;n podr&#xE1; pasarse como <strong>string</strong> o como <strong>bloque</strong>
+
+<ul>
+<li><strong>strings:</strong> se ejecutan como un comando de shell</li>
+<li><strong>bloques:</strong> se ejecutan como c&#xF3;digo Ruby</li>
+</ul></li>
+<li>En el caso de strings el atributo ser&#xE1; <code>true</code> cuando retorne <code>0</code></li>
+</ul>
+</div>
+</div><div class="slide" data-transition="scrollVert"><div class="content bullets" ref="01-chef-dev/06_recursos_chef/11">
+<h1>Ejecuci&#xF3;n condicional</h1>
+
+<ul>
+<li>Atributos que permiten la ejecuci&#xF3;n condicional
+
+<ul>
+<li><code>not_if</code></li>
+<li><code>only_if</code></li>
+</ul></li>
+</ul>
+</div>
+</div><div class="slide" data-transition="scrollVert"><div class="content bullets" ref="01-chef-dev/06_recursos_chef/12">
+<h1>Ejecuci&#xF3;n condicional</h1>
+
+<ul>
+<li>En ambos casos, es posible utilizar argumentos:
+
+<ul>
+<li><code>:user</code>: usado para especificar el usuario con el que se correr&#xE1; el comando a evaluar</li>
+<li><code>:group:</code>: igual que el anterior, pero aplica al grupo</li>
+<li><code>:environment</code>: un hash de variables de ambiente que ser&#xE1;n seteadas</li>
+<li><code>:cwd</code>: setea el path donde se correr&#xE1; el comando</li>
+<li><code>:timeout</code>: para setear un timeout para el comando</li>
+</ul></li>
+</ul>
+</div>
+</div><div class="slide" data-transition="scrollVert"><div class="content small" ref="01-chef-dev/06_recursos_chef/13">
+<h1>Ejecuci&#xF3;n condicional</h1>
+
+<h2>Ejemplo de uso de argumentos</h2>
+
+<pre class="sh_ruby"><code>    not_if "grep adam /etc/passwd", :user =&gt; 'adam'
+
+    not_if "grep adam /etc/passwd", :group =&gt; 'adam'
+
+    not_if "grep adam /etc/passwd", {
+        :environment =&gt; { 'HOME' =&gt; "/home/adam" }
+    }
+
+    not_if "grep adam passwd", :cwd =&gt; '/etc'
+
+    not_if "sleep 10000", :timeout =&gt; 10</code></pre>
+</div>
+</div><div class="slide" data-transition="scrollVert"><div class="content small" ref="01-chef-dev/06_recursos_chef/14">
+<h1>Ejecuci&#xF3;n condicional</h1>
+
+<h2>Ejemplo de ejecuci&#xF3;n condicional completo</h2>
+
+<pre class="sh_ruby"><code>template "/tmp/somefile" do
+    mode 00644
+    source "somefile.erb"
+    not_if {File.exists?("/etc/passwd")}
+end
+
+template "/tmp/somefile" do
+    mode 00644
+    source "somefile.erb"
+    not_if "test -f /etc/passwd"
+end</code></pre>
+</div>
+</div><div class="slide" data-transition="scrollVert"><div class="content small" ref="01-chef-dev/06_recursos_chef/15">
+<h1>Notificaciones</h1>
 </div>
 </div><div class="slide" data-transition="scrollVert"><div class="content center subsection" ref="02-chef-prod/01-intro">
 <h1>TODO</h1>
