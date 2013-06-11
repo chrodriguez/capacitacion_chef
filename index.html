@@ -98,6 +98,14 @@
 <div class="destacado">
 por Lic. Christian A. Rodriguez <a href="https://twitter.com/car_unlp">@car_unlp</a>
 </div></img>
+
+<div class="footer">
+<br/>
+<a rel="license" href="http://creativecommons.org/licenses/by-sa/3.0/deed.es"><img alt="Licencia Creative Commons" style="border-width:0" src="http://i.creativecommons.org/l/by-sa/3.0/80x15.png"/></a><br/><span xmlns:dct="http://purl.org/dc/terms/" href="http://purl.org/dc/dcmitype/Text" property="dct:title" rel="dct:type">Capacitaci&#xF3;n sobre Chef</span> por <span xmlns:cc="http://creativecommons.org/ns#" property="cc:attributionName">Christian A. Rodriguez</span> se encuentra bajo
+una <a rel="license" href="http://creativecommons.org/licenses/by-sa/3.0/deed.es">Licencia Creative
+Commons Atribuci&#xF3;n-CompartirIgual 3.0 Unported</a>.<br/>Basada en una obra en
+<a xmlns:dct="http://purl.org/dc/terms/" href="https://github.com/chrodriguez/capacitacion_chef" rel="dct:source">https://github.com/chrodriguez/capacitacion_chef</a>.
+</div>
 </p>
 </p>
 </div>
@@ -502,7 +510,11 @@ convenciones</li>
 <li>Estructura de directorios</li>
 <li>Cookbooks y recipes</li>
 <li>Resources y Providers</li>
+<li>Atributos</li>
 <li>Un recipe para ntp</li>
+<li>Roles</li>
+<li>Environments</li>
+<li>Databags</li>
 <li>Berkshelf</li>
 <li>Ciclo de desarrollo en Chef</li>
 <li>Amazon EC2</li>
@@ -1954,6 +1966,116 @@ end</code></pre>
 <h2>Documentaci&#xF3;n disponible en:</h2>
 
 <p><a href="http://docs.opscode.com/resource.html">http://docs.opscode.com/resource.html</a></p>
+</div>
+</div><div class="slide" data-transition="scrollVert"><div class="content subsection center" ref="01-chef-dev/07_atributos_chef/1">
+<h1>Attributes en Chef</h1>
+</div>
+</div><div class="slide" data-transition="scrollVert"><div class="content bullets small" ref="01-chef-dev/07_atributos_chef/2">
+<h1>Attributes</h1>
+
+<ul>
+<li>Los <em>attributes</em> son un detalle espec&#xED;fico de un nodo. Chef utiliza los attributes para entender:
+
+<ul>
+<li>El estado actual de un nodo</li>
+<li>Cu&#xE1;l era el estado del nodo al finalizar la anterior corrida de Chef</li>
+<li>Cu&#xE1;l deber&#xED;a de ser el estado del nodo al finalizar la corrida de Chef</li>
+</ul></li>
+<li>Los attributes son definidos por:
+
+<ul>
+<li>El estado mismo del nodo</li>
+<li>Cookbooks: mediante archivos en el directorio <code>attributes/</code> y/o recipes</li>
+<li>Roles</li>
+<li>Environments</li>
+</ul></li>
+</ul>
+</div>
+</div><div class="slide" data-transition="scrollVert"><div class="content bullets small" ref="01-chef-dev/07_atributos_chef/3">
+<h1>Attributes</h1>
+
+<ul>
+<li>Durante cada corrida de Chef, <code>chef-client</code> arma la lista de attributes
+usando:
+
+<ul>
+<li>Datos recolectados de <em>ohai</em></li>
+<li>El objeto <code>node</code> guardado en Chef Server al finalizar la corrida previa
+de Chef</li>
+<li>La reconstrucci&#xF3;n del objeto <code>node</code> para la actual corrida de Chef, luego de
+actualizar cookbooks (mediante los archivos en el directorio <code>attributes/</code>
+y/o recipes), roles, environments, y actualizaciones de cualquier estado en el
+mismo <code>node</code> (por ejemplo ohai)</li>
+</ul></li>
+</ul>
+
+<p>Una vez reconstru&#xED;do el objeto <code>node</code>, todos los attributes son comparados y
+actualizados siguiendo las reglas de precedencia.</p>
+
+<p>Al finalizar la corrida de Chef, el objeto <code>node</code> que define el estado actual
+del mismo es subido al Chef Server con la finalidad de indexarlo y as&#xED; permitir
+b&#xFA;squedas.</p>
+</div>
+</div><div class="slide" data-transition="scrollVert"><div class="content smbullets small" ref="01-chef-dev/07_atributos_chef/4">
+<h1>Attribute Types</h1>
+
+<ul>
+<li><code>default</code>: estos atributos son resetados al iniciar cada corrida de Chef y
+tienen la menor precedencia. Un cookbook debe crearse utilizando tantos atributos por
+defecto como sea posible, sin dejar atributos sin valor.</li>
+<li><code>force_default</code>: estos atributos son usados para <em>asegurar</em> que un atributo definido en un
+cookbook (mediante archivos en el directorio <code>attributes</code> y/o recipes) toma
+precedencia sobre el atributo <code>default</code> definido por un <em>role</em> o <em>environment</em></li>
+<li><code>normal</code>: estos atributos son seteos que persisten en el sistema destino y
+nunca son reseteados por una corrida de Chef. Los atributos <code>normal</code> tienen
+mayor precedencia que los <code>default</code></li>
+</ul>
+</div>
+</div><div class="slide" data-transition="scrollVert"><div class="content smbullets small" ref="01-chef-dev/07_atributos_chef/5">
+<h1>Attribute Types</h1>
+
+<ul>
+<li><code>override</code>: estos atributos son autom&#xE1;ticamente reseteados al inicio de cada
+corrida de Chef, y tiene mayor precedencia que los atributos <code>default</code>,
+<code>force_default</code> y <code>normal</code>. Son <em>mayormente</em> utilizados en recipes, pero pueden
+especificarse en archivos de <code>attributes</code>, <em>roles</em> o <em>environments</em>. Un cookbook
+debe utilizar este tipo de atributos <em>s&#xF3;lo cuando sea necesario</em>.</li>
+<li><code>force_override</code>: estos atributos son usados para <em>asegurar</em> que un atributo
+definido en un cookbook (mediante archivos en el directorio <code>attributes</code> y/o recipes) toma
+precedencia sobre el atributo <code>override</code> definido por un <em>role</em> o <em>environment</em></li>
+<li><code>automatic</code>: estos atributos contienen datos identificados por <em>Ohai</em> al
+inicio de cada corrida de Chef. Un atributo <code>automatic</code> no puede modificarse y
+<em>siempre</em> tiene la precedencia m&#xE1;s alta</li>
+</ul>
+</div>
+</div><div class="slide" data-transition="scrollVert"><div class="content" ref="01-chef-dev/07_atributos_chef/6">
+<h1>Attribute Types</h1>
+
+<p>Al inicio de cada corrida de Chef, se <em>resetean</em> todos los atributos <code>default</code>, <code>override</code> y
+<code>automatic</code>. </p>
+
+<p>Chef reconstruir&#xE1; los atributos recolectando informaci&#xF3;n de <em>Ohai</em>
+al inicio de cada corrida de Chef, y atributos definidos en el cookbook, roles
+y/o environments.</p>
+
+<p>Los atributos <code>normal</code> <em>nunca son resetados</em></p>
+
+<p>Luego todos los atributos se mezclan y aplican al node de acuerdo a la
+precedencia de atributos.</p>
+
+<p>Al finalizar la corrida de Chef, todos los atributos <code>default</code>, <code>override</code> y
+<code>automatic</code> desaparecen, dejando s&#xF3;lo la colecci&#xF3;n de atributos <code>normal</code> que
+persistir&#xE1;n hasta la pr&#xF3;xima corrida de Chef.</p>
+</div>
+</div><div class="slide" data-transition="scrollVert"><div class="content" ref="01-chef-dev/07_atributos_chef/7">
+<h1>Attribute Types</h1>
+
+<p>Al inicio de cada corrida de Chef, se <em>resetean</em> todos los atributos <code>default</code>, <code>override</code> y
+<code>automatic</code>. </p>
+
+<p>Chef reconstruir&#xE1; los atributos recolectando informaci&#xF3;n de <em>Ohai</em>
+al inicio de cada corrida de Chef, y atributos definidos en el cookbook, roles
+y/o environments.</p>
 </div>
 </div><div class="slide" data-transition="scrollVert"><div class="content center subsection" ref="02-chef-prod/01-intro">
 <h1>TODO</h1>
