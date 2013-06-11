@@ -16,7 +16,11 @@
   * Estructura de directorios
   * Cookbooks y recipes
   * Resources y Providers
+  * Atributos
   * Un recipe para ntp
+  * Roles
+  * Environments
+  * Databags
   * Berkshelf
   * Ciclo de desarrollo en Chef
   * Amazon EC2
