@@ -36,6 +36,8 @@
     
       <script type="text/javascript" src="./js/sh_lang/sh_ruby.min.js"></script>
     
+      <script type="text/javascript" src="./js/sh_lang/sh_json.min.js"></script>
+    
   
 
   
@@ -99,7 +101,7 @@
 por Lic. Christian A. Rodriguez <a href="https://twitter.com/car_unlp">@car_unlp</a>
 </div></img>
 
-<div class="footer">
+<div class="footer license">
 <br/>
 <a rel="license" href="http://creativecommons.org/licenses/by-sa/3.0/deed.es"><img alt="Licencia Creative Commons" style="border-width:0" src="http://i.creativecommons.org/l/by-sa/3.0/80x15.png"/></a><br/><span xmlns:dct="http://purl.org/dc/terms/" href="http://purl.org/dc/dcmitype/Text" property="dct:title" rel="dct:type">Capacitaci&#xF3;n sobre Chef</span> por <span xmlns:cc="http://creativecommons.org/ns#" property="cc:attributionName">Christian A. Rodriguez</span> se encuentra bajo
 una <a rel="license" href="http://creativecommons.org/licenses/by-sa/3.0/deed.es">Licencia Creative
@@ -512,10 +514,10 @@ convenciones</li>
 <li>Resources y Providers</li>
 <li>Atributos</li>
 <li>Un recipe para ntp</li>
+<li>Berkshelf</li>
 <li>Roles</li>
 <li>Environments</li>
 <li>Databags</li>
-<li>Berkshelf</li>
 <li>Ciclo de desarrollo en Chef</li>
 <li>Amazon EC2</li>
 <li>Material de chef</li>
@@ -2067,15 +2069,798 @@ precedencia de atributos.</p>
 <code>automatic</code> desaparecen, dejando s&#xF3;lo la colecci&#xF3;n de atributos <code>normal</code> que
 persistir&#xE1;n hasta la pr&#xF3;xima corrida de Chef.</p>
 </div>
-</div><div class="slide" data-transition="scrollVert"><div class="content" ref="01-chef-dev/07_atributos_chef/7">
-<h1>Attribute Types</h1>
+</div><div class="slide" data-transition="scrollVert"><div class="content bullets" ref="01-chef-dev/07_atributos_chef/7">
+<h1>Or&#xED;genes de Attributes</h1>
 
-<p>Al inicio de cada corrida de Chef, se <em>resetean</em> todos los atributos <code>default</code>, <code>override</code> y
-<code>automatic</code>. </p>
+<ul>
+<li>Los atributos son provistos a Chef desde los siguientes or&#xED;genes:
 
-<p>Chef reconstruir&#xE1; los atributos recolectando informaci&#xF3;n de <em>Ohai</em>
-al inicio de cada corrida de Chef, y atributos definidos en el cookbook, roles
-y/o environments.</p>
+<ul>
+<li>Nodes, a trav&#xE9;s de Ohai al inicio de cada corrida</li>
+<li>Archivos bajo el directorio <code>attributes</code> dentro de cookbooks</li>
+<li>Recipes dentro de cookbooks</li>
+<li>Environments</li>
+<li>Roles</li>
+</ul></li>
+</ul>
+</div>
+</div><div class="slide" data-transition="scrollVert"><div class="content center" ref="01-chef-dev/07_atributos_chef/8">
+<h1>Or&#xED;genes de Attributes</h1>
+
+<p><img src="./file/01-chef-dev/topologia-chef-atributos.png" alt="Chef origenes"/>
+</p>
+</div>
+</div><div class="slide" data-transition="scrollVert"><div class="content bullets" ref="01-chef-dev/07_atributos_chef/9">
+<h1>Automatic (Ohai)</h1>
+
+<ul>
+<li>Algunos valores com&#xFA;nmente usados:
+
+<ul>
+<li><code>node['platform']</code></li>
+<li><code>node['platform_version']</code></li>
+<li><code>node['ipaddress']</code></li>
+<li><code>node['macaddress']</code></li>
+<li><code>node['fqdn']</code></li>
+<li><code>node['hostname']</code></li>
+<li><code>node['domain']</code></li>
+<li><code>node['recipes']</code></li>
+<li><code>node['roles']</code></li>
+<li><code>node['ohai_time']</code></li>
+</ul></li>
+</ul>
+</div>
+</div><div class="slide" data-transition="scrollVert"><div class="content commandline incremental" ref="01-chef-dev/07_atributos_chef/10">
+<h1>Automatic (Ohai)</h1>
+
+<pre><code><code class="command">$ chef-shell</code>
+<code class="result">chef &gt; node[:platform]
+  =&gt; "ubuntu" 
+
+chef &gt; node[:platform_version]
+  =&gt; "12.04" 
+
+chef &gt; Time.at(node[:ohai_time])
+  =&gt; ...
+</code></code></pre>
+</div>
+</div><div class="slide" data-transition="scrollVert"><div class="content smbullets" ref="01-chef-dev/07_atributos_chef/11">
+<h1>Archivo de Attributes</h1>
+
+<ul>
+<li>Estos archivos existe en el subdirectorio <code>attributes/</code> de un cookbook</li>
+<li>Cuando un cookbook es ejecutado en un nodo, los atributos contenidos en 
+todos los archivos bajo este subdirectorio son evaluados en el contexto del
+objeto <em>node</em>.</li>
+<li>Si est&#xE1;n presentes, los m&#xE9;todos de un nodo son utilizados para setear los
+atributos del nodo. </li>
+</ul>
+</div>
+</div><div class="slide" data-transition="scrollVert"><div class="content small" ref="01-chef-dev/07_atributos_chef/12">
+<h1>Archivo de Attributes</h1>
+
+<p>Por ejemeplo, el cookbook <em>Apache</em> contiene un archivo de attribute llamado <code>default.rb</code> que contiene atributos como:</p>
+
+<pre class="sh_ruby"><code>default["apache"]["dir"]          = "/etc/apache2"
+default["apache"]["listen_ports"] = [ "80","443" ]</code></pre>
+
+<p>En este ejemplo, el uso del objeto node est&#xE1; impl&#xED;cito. En el siguiente ejemplo
+utiliza el objeto node:</p>
+
+<pre class="sh_ruby"><code>node.default["apache"]["dir"]         = "/etc/apache2"
+node.default["apache"]["listen_ports"]= ["80", "443"]</code></pre>
+</div>
+</div><div class="slide" data-transition="scrollVert"><div class="content smbullets smaller" ref="01-chef-dev/07_atributos_chef/13">
+<h1>Precedencia de Attributes</h1>
+
+<ol>
+<li>Un <code>default</code> attribute ubicado en un archivo attributes</li>
+<li>Un <code>default</code> attribute ubicado en un recipe </li>
+<li>Un <code>default</code> attribute ubicado en un environment</li>
+<li>Un <code>default</code> attribute ubicado en un role</li>
+<li>Un <code>force_default</code> attribute ubicado en un archivo attributes</li>
+<li>Un <code>force_default</code> attribute ubicado en un recipe</li>
+<li>Un <code>normal</code> attribute ubicado en un archivo attributes</li>
+<li>Un <code>normal</code> attribute ubicado en un recipe</li>
+<li>Un <code>override</code> attribute ubicado en un archivo attributes</li>
+<li>Un <code>override</code> attribute ubicado en un recipe</li>
+<li>Un <code>override</code> attribute ubicado en un role</li>
+<li>Un <code>override</code> attribute ubicado en un environment</li>
+<li>Un <code>force_override</code> attribute ubicado en un archivo attributes</li>
+<li>Un <code>force_override</code> attribute ubicado en un recipe</li>
+<li>Un <code>automatic</code> attribute identificado por ohai al inicio de una corrida Chef</li>
+</ol>
+</div>
+</div><div class="slide" data-transition="scrollVert"><div class="content" ref="01-chef-dev/07_atributos_chef/14">
+<h1>Precedencia de Attributes</h1>
+
+<p>El orden de precedencia de atributos para <em>roles</em> y <em>environments</em> se invierte
+para atributos <code>default</code>y <code>override</code>:</p>
+
+<ul>
+<li>Para <code>default</code>, el orden de precedencia es: environment, role</li>
+<li>Para <code>override</code>, el orden de precedencia es: role, environment</li>
+</ul>
+
+<p><em>Aplicando los atributos <code>override</code> del environment</em> <strong><em>luego</em></strong> <em>de los roles
+permite que los roles existan en m&#xFA;ltiples environments</em></p>
+</div>
+</div><div class="slide" data-transition="scrollVert"><div class="content smaller" ref="01-chef-dev/07_atributos_chef/15">
+<h1>Ejemplo de attributes</h1>
+
+<h2>Ejemplos ordenados de menor a mayor precedencia</h2>
+
+<p>Default attribute en <code>/attributes/default.rb</code></p>
+
+<pre class="sh_ruby"><code>default["apache"]["dir"] = "/etc/apache2"</code></pre>
+
+<p>Default attribute en <code>/environments/environment_name.rb</code></p>
+
+<pre class="sh_ruby"><code>default_attributes({ "apache" =&gt; {"dir" =&gt; "/etc/apache2"}})</code></pre>
+
+<p>Default attribute en <code>/roles/role_name.rb</code></p>
+
+<pre class="sh_ruby"><code>default_attributes({ "apache" =&gt; {"dir" =&gt; "/etc/apache2"}})</code></pre>
+
+<p>Default attribute en objeto <code>node</code> en una recipe</p>
+
+<pre class="sh_ruby"><code>node.default["apache"]["dir"] = "/etc/apache2"</code></pre>
+</div>
+</div><div class="slide" data-transition="scrollVert"><div class="content smaller" ref="01-chef-dev/07_atributos_chef/16">
+<h1>Ejemplo de attributes</h1>
+
+<h2>Ejemplos ordenados de menor a mayor precedencia</h2>
+
+<p>Normal attribute seteado en un cookbook mediante <code>/attributes/default.rb</code></p>
+
+<pre class="sh_ruby"><code>set["apache"]["dir"] = "/etc/apache2"
+normal["apache"]["dir"] = "/etc/apache2"  
+    #set alias de normal</code></pre>
+
+<p>Normal attribute seteado en un <code>recipe</code></p>
+
+<pre class="sh_ruby"><code>node.set["apache"]["dir"] = "/etc/apache2"
+node.normal["apache"]["dir"] = "/etc/apache2" # idem ant
+node["apache"]["dir"] = "/etc/apache2"        # idem ant</code></pre>
+
+<p>Override attribute en <code>/attributes/default.rb</code></p>
+
+<pre class="sh_ruby"><code>override["apache"]["dir"] = "/etc/apache2"</code></pre>
+
+<p>Override attribute en <code>/roles/role_name.rb</code></p>
+
+<pre class="sh_ruby"><code>override_attributes({ "apache" =&gt; {"dir" =&gt; "/etc/apache2"}})</code></pre>
+</div>
+</div><div class="slide" data-transition="scrollVert"><div class="content smaller" ref="01-chef-dev/07_atributos_chef/17">
+<h1>Ejemplo de attributes</h1>
+
+<h2>Ejemplos ordenados de menor a mayor precedencia</h2>
+
+<p>Override attribute en <code>/environments/environment_name.rb</code></p>
+
+<pre class="sh_ruby"><code>override_attributes({ "apache" =&gt; {"dir" =&gt; "/etc/apache2"}})</code></pre>
+
+<p>Override attribute en objeto <code>node</code> (de un recipe)</p>
+
+<pre class="sh_ruby"><code>node.override["apache"]["dir"] = "/etc/apache2"</code></pre>
+</div>
+</div><div class="slide" data-transition="scrollVert"><div class="content smaller" ref="01-chef-dev/07_atributos_chef/18">
+<h1>Modificando la precedencia de attributes default</h1>
+
+<p>Cuando un default attribute es setado as&#xED;:</p>
+
+<pre class="sh_ruby"><code>default["attribute"] = "value"</code></pre>
+
+<p>cualquier valor seteado por un role o environment lo reemplazar&#xE1;. Para prevenir
+este remplazo, podemos utilizar <code>force_default</code>:</p>
+
+<pre class="sh_ruby"><code>force_default["attribute"] = "I will crush you, role or " +
+    "environment attribute"
+
+# o es posible usar:
+
+default!["attribute"] = "The '!' means I win!"</code></pre>
+</div>
+</div><div class="slide" data-transition="scrollVert"><div class="content smaller" ref="01-chef-dev/07_atributos_chef/19">
+<h1>Modificando la precedencia de attributes override</h1>
+
+<p>Cuando un override attribute es seteado as&#xED;:</p>
+
+<pre class="sh_ruby"><code>override["attribute"] = "value"</code></pre>
+
+<p>cualquier valor seteado por un rol o environment lo reemplazar&#xE1;. Para prevenir
+este reemplazo, podemos utilizar <code>force_override</code>:</p>
+
+<pre class="sh_ruby"><code>force_override["attribute"] = "I will crush you, role or "+
+    "environment attribute"
+
+# o es posible usar:
+
+override!["attribute"] = "The '!' means I win!"</code></pre>
+</div>
+</div><div class="slide" data-transition="scrollVert"><div class="content subsection center" ref="01-chef-dev/08_ntp/1">
+<h1>NTP con chef</h1>
+</div>
+</div><div class="slide" data-transition="scrollVert"><div class="content commandline" ref="01-chef-dev/08_ntp/2">
+<h1>NTP con chef</h1>
+
+<h2>Creamos el cookbook</h2>
+
+<pre><code><code class="command">$ mkdir -p cookbooks/ntp </code>
+</code></pre>
+
+<h2>Creamos el recipe</h2>
+
+<pre><code><code class="command">$ mkdir -p cookbooks/ntp/recipes</code>
+<code class="command">$ vi cookbooks/ntp/recipes/default.rb</code>
+</code></pre>
+
+<p><em>Es aconsejable tener una receta para <code>server.rb</code> y otra para <code>client.rb</code> en
+este caso, pero por cuestiones de simplicidad, utilizamos &#xFA;nicamente el recipe <code>default.rb</code></em></p>
+</div>
+</div><div class="slide" data-transition="scrollVert"><div class="content smbullets" ref="01-chef-dev/08_ntp/3">
+<h1>&#xBF;Qu&#xE9; deber&#xED;amos hacer?</h1>
+
+<ul>
+<li>Instalar el paquete de NTP</li>
+<li>Configurar <code>/etc/ntp.conf</code></li>
+<li>Habilitar el servicio para que bootee e iniciar el servicio</li>
+</ul>
+</div>
+</div><div class="slide" data-transition="scrollVert"><div class="content" ref="01-chef-dev/08_ntp/4">
+<h1>El recipe</h1>
+
+<p>En la edici&#xF3;n de <code>recipes/default.rb</code> tendr&#xED;amos:</p>
+
+<pre class="sh_ruby"><code>package 'ntp'
+
+template '/etc/ntp.conf' do
+    source    'ntp.conf.erb'
+    notifies  :restart, 'service[ntp]'
+end
+
+service 'ntp' do
+    action [:enable, :start]
+end</code></pre>
+</div>
+</div><div class="slide" data-transition="scrollVert"><div class="content smbullets incremental" ref="01-chef-dev/08_ntp/5">
+<h1>&#xBF;C&#xF3;mo se usa el resource template?</h1>
+
+<ul>
+<li>&#xBF;Qu&#xE9; es el formato erb?</li>
+<li>&#xBF;C&#xF3;mo uso variables en el template?</li>
+<li>&#xBF;Pueden haber diferentes versiones del mismo template?</li>
+</ul>
+</div>
+</div><div class="slide" data-transition="scrollVert"><div class="content commandline" ref="01-chef-dev/08_ntp/6">
+<h1>El template para ntp</h1>
+
+<p>El template <code>/etc/ntp.conf</code> debemos crearlo en el directorio <code>templates/default</code>
+de mi cookbook con el nombre <code>ntp.conf.erb</code> porque es lo que indicamso en la
+recipe <code>default.rb</code> anteriormente:</p>
+
+<pre><code><code class="command">$ mkdir -p cookbooks/ntp/templates/default</code>
+<code class="command">$ vi cookbooks/ntp/templates/default/ntp.conf.erb</code>
+</code></pre>
+</div>
+</div><div class="slide" data-transition="scrollVert"><div class="content smaller" ref="01-chef-dev/08_ntp/7">
+<h1>El template para ntp</h1>
+
+<pre class="sh_ruby"><code># This file was generated by Chef for '&lt;%= node['fqdn'] %&gt;'.
+# Do NOT edit this file by hand!
+
+restrict default kod nomodify notrap nopeer noquery
+restrict -6 default kod nomodify notrap nopeer noquery
+restrict 127.0.0.1
+restrict -6 ::1
+server &lt;%= node[:ntp][:server]%&gt;
+server  127.127.1.0     # local clock
+driftfile /var/lib/ntp/drift
+keys /etc/ntp/keys</code></pre>
+</div>
+</div><div class="slide" data-transition="scrollVert"><div class="content" ref="01-chef-dev/08_ntp/8">
+<h1>Nos quedar&#xED;a definir los atributos usados</h1>
+
+<ul>
+<li>Los valores usados en el template son atributos, a decir:
+
+<ul>
+<li><code>node['fqdn']</code>: valor provisto por ohai</li>
+<li><code>node[:ntp][:server]</code>: valor provisto por este cookbook. <strong>Hay que definirlo</strong></li>
+</ul></li>
+</ul>
+</div>
+</div><div class="slide" data-transition="scrollVert"><div class="content commandline" ref="01-chef-dev/08_ntp/9">
+<h1>Attributes ntp</h1>
+
+<p>Editamos <code>attributes/default.rb</code></p>
+
+<pre><code><code class="command">$ mkdir  -p cookbooks/ntp/attributes</code>
+<code class="command">$ vi cookbooks/ntp/attributes/default.rb</code>
+</code></pre>
+</div>
+</div><div class="slide" data-transition="scrollVert"><div class="content" ref="01-chef-dev/08_ntp/10">
+<h1>Attributes ntp</h1>
+
+<pre class="sh_ruby"><code>default[:ntp][:server] = '0.pool.ntp.org'</code></pre>
+</div>
+</div><div class="slide" data-transition="scrollVert"><div class="content commandline smaller incremental" ref="01-chef-dev/08_ntp/11">
+<h1>Probando la receta ntp</h1>
+
+<p>Inicializamos <code>vagrant</code> en el directorio en el que estamos trabajando. Considere
+que ser&#xED;a el directorio donde se encuentra el directorio <code>cookbooks</code> en el cu&#xE1;l
+creamos el cookbook <code>ntp</code>. </p>
+
+<pre><code><code class="command">$ vagrant init ubuntu-1204 \
+    http://vagrantbox.desarrollo.cespi.unlp.edu.ar/pub/ubuntu-12.04.2-cespi-amd64.box</code>
+<code class="result">    A `Vagrantfile` has been placed in this directory. You are now
+    ready to `vagrant up` your first virtual environment! Please read
+    the comments in the Vagrantfile as well as documentation on
+    `vagrantup.com` for more information on using Vagrant.
+</code></code></pre>
+</div>
+</div><div class="slide" data-transition="scrollVert"><div class="content smaller" ref="01-chef-dev/08_ntp/12">
+<h1>Probando la receta ntp</h1>
+
+<p>Editamos <code>Vagrantfile</code> indicando que usaremos chef con la receta de ntp, quedando nuestro archivo:</p>
+
+<pre class="sh_ruby"><code>Vagrant.configure("2") do |config|
+    config.vm.box = "ubuntu-1204"
+    config.vm.box_url = "http://vagrantbo......"
+    config.vm.network :private_network, ip: "192.168.33.10"
+    config.vm.provision :chef_solo do |chef|
+         chef.cookbooks_path = "cookbooks"
+         chef.add_recipe "ntp"
+    end
+end</code></pre>
+</div>
+</div><div class="slide" data-transition="scrollVert"><div class="content commandline incremental smaller" ref="01-chef-dev/08_ntp/13">
+<pre><code><code class="command">$ vagrant up</code>
+<code class="result">Bringing machine 'default' up with 'virtualbox' provider...
+[default] Importing base box 'ubuntu-1204'...
+[default] Matching MAC address for NAT networking...
+[default] Setting the name of the VM...
+[default] Forwarding ports...
+[default] -- 22 =&gt; 2222 (adapter 1)
+[default] Booting VM...
+[default] Waiting for VM to boot. This can take a few minutes.
+[default] VM booted and ready for use!
+[default] Configuring and enabling network interfaces...
+[default] Mounting shared folders...
+[default] -- /vagrant
+[default] -- /tmp/vagrant-chef-1/chef-solo-1/cookbooks
+[default] Running provisioner: chef_solo...
+Generating chef JSON and uploading...
+Running chef-solo...
+stdin: is not a tty
+[2013-06-13T13:11:43+00:00] INFO: *** Chef 11.4.4 ***
+[2013-06-13T13:11:45+00:00] INFO: Setting the run_list to ["recipe[ntp]"] from
+JSON
+[2013-06-13T13:11:45+00:00] INFO: Run List is [recipe[ntp]]
+[2013-06-13T13:11:45+00:00] INFO: Run List expands to [ntp]
+[2013-06-13T13:11:45+00:00] INFO: Starting Chef Run for
+ubuntu-12.04.2-cespi-amd64
+[2013-06-13T13:11:45+00:00] INFO: Running start handlers
+[2013-06-13T13:11:45+00:00] INFO: Start handlers complete.
+[2013-06-13T13:11:45+00:00] INFO: Processing package[ntp] action install
+(ntp::default line 1)
+[2013-06-13T13:11:45+00:00] INFO: Processing template[/etc/ntp.conf] action
+create (ntp::default line 3)
+[2013-06-13T13:11:46+00:00] INFO: template[/etc/ntp.conf] backed up to
+/var/chef/backup/etc/ntp.conf.chef-20130613131145
+[2013-06-13T13:11:46+00:00] INFO: template[/etc/ntp.conf] updated content
+[2013-06-13T13:11:46+00:00] INFO: Processing service[ntp] action enable
+(ntp::default line 8)
+[2013-06-13T13:11:46+00:00] INFO: Processing service[ntp] action start
+(ntp::default line 8)
+[2013-06-13T13:11:46+00:00] INFO: template[/etc/ntp.conf] sending restart action
+to service[ntp] (delayed)
+[2013-06-13T13:11:46+00:00] INFO: Processing service[ntp] action restart
+(ntp::default line 8)
+[2013-06-13T13:11:47+00:00] INFO: service[ntp] restarted
+[2013-06-13T13:11:47+00:00] INFO: Chef Run complete in 2.319794345 seconds
+[2013-06-13T13:11:47+00:00] INFO: Running report handlers
+[2013-06-13T13:11:47+00:00] INFO: Report handlers complete
+</code></code></pre>
+</div>
+</div><div class="slide" data-transition="scrollVert"><div class="content commandline small" ref="01-chef-dev/08_ntp/14">
+<h1>Verificamos todo</h1>
+
+<p>Conectamos por ssh: <code>vagrant ssh</code></p>
+
+<p>Analizar el template generado: <code>cat /etc/ntp.conf</code></p>
+
+<p>Usar el cliente de ntp:</p>
+
+<pre><code><code class="command">$ ntpq -c peers</code>
+<code class="result">         remote           refid      st t when poll reach   delay   offset  jitter
+    ==============================================================================
+     66.60.22.202    105.134.105.216  4 u   12   64    3   10.850   10.758   1.087
+    *LOCAL(0)        .LOCL.           5 l   11   64    3    0.000    0.000   0.031
+</code></code></pre>
+</div>
+</div><div class="slide" data-transition="scrollVert"><div class="content smaller" ref="01-chef-dev/08_ntp/15">
+<h1>Personalizamos el nodo</h1>
+
+<p>Editamos <code>Vagrantfile</code> cambiando el <code>attribute</code> provisto por nuestro cookbook al
+ntp de cespi</p>
+
+<pre class="sh_ruby"><code>Vagrant.configure("2") do |config|
+    config.vm.box = "ubuntu-1204"
+    config.vm.box_url = "http://vagrantbo......"
+    config.vm.network :private_network, ip: "192.168.33.10"
+    config.vm.provision :chef_solo do |chef|
+         chef.cookbooks_path = "cookbooks"
+         chef.add_recipe "ntp"
+         chef.json = {&#xB7;
+        :ntp =&gt; {
+            :server =&gt; "cronos.unlp.edu.ar"
+        }
+    }
+    end
+end</code></pre>
+</div>
+</div><div class="slide" data-transition="scrollVert"><div class="content commandline small" ref="01-chef-dev/08_ntp/16">
+<h1>Verificamos todo</h1>
+
+<p>Conectamos por ssh: <code>vagrant ssh</code></p>
+
+<p>Analizar el template generado: <code>cat /etc/ntp.conf</code></p>
+
+<p>Usar el cliente de ntp:</p>
+
+<pre><code><code class="command">$ ntpq -c peers</code>
+<code class="result">         remote           refid      st t when poll reach   delay   offset  jitter
+    ==============================================================================
+     163.10.0.84     163.10.43.120    2 u   17   64    1   10.061    8.278   0.008
+    *LOCAL(0)        .LOCL.           5 l   16   64    1    0.000    0.000   0.008
+</code></code></pre>
+</div>
+</div><div class="slide" data-transition="scrollVert"><div class="content smbullets small" ref="01-chef-dev/08_ntp/17">
+<h1>La decepci&#xF3;n</h1>
+
+<ul>
+<li>Ingresamos a <a href="http://community.opscode.com">http://community.opscode.com</a>
+
+<ul>
+<li><a href="http://community.opscode.com/cookbooks/ntp">El caso de NTP</a></li>
+</ul></li>
+<li>Siempre hay que buscar si lo que necesitamos ya existe
+
+<ul>
+<li>Buscar tambi&#xE9;n en google</li>
+<li>Considerar el espacio en <a href="https://github.com/opscode-cookbooks/">github de opscode</a></li>
+</ul></li>
+<li>Muchas veces lo que existe debe modificarse
+
+<ul>
+<li>Usemos el workflow propuesto por github forkeando el repositorio</li>
+<li>Si mejoramos funcionalidad contribuimos</li>
+</ul></li>
+<li>Algunas reglas que seguir:
+
+<ul>
+<li><a href="http://docs.opscode.com/community_guidelines.html">Gu&#xED;as de la comunidad</a></li>
+<li><a href="http://wiki.opscode.com/display/chef/How+to+Contribute+to+Opscode+Cookbooks">Contribuir con los cookbooks de Opscode</a></li>
+</ul></li>
+</ul>
+</div>
+</div><div class="slide" data-transition="scrollVert"><div class="content commandline incremental" ref="01-chef-dev/08_ntp/18">
+<h1>Descargar el ejemplo</h1>
+
+<h2>Para descargar el ejemplo dado</h2>
+
+<pre><code><code class="command">$ git clone https://github.com/chrodriguez/capacitacion_chef.git</code>
+<code class="command">$ cd capacitacion_chef </code>
+<code class="command">$ cd samples/01-chef-dev/02-ntp</code>
+</code></pre>
+</div>
+</div><div class="slide" data-transition="scrollVert"><div class="content smbullets" ref="01-chef-dev/08_ntp/19">
+<h1>Un cookbook m&#xE1;s</h1>
+
+<ul>
+<li>Hagamos una nueva receta que cree una base de datos <strong>mysql</strong>  y un usuario que pueda
+conectarse</li>
+<li>Buscamos qu&#xE9; cookbooks nos resuelven el problema</li>
+</ul>
+</div>
+</div><div class="slide" data-transition="scrollVert"><div class="content smbullets" ref="01-chef-dev/08_ntp/20">
+<h1>Un cookbook m&#xE1;s</h1>
+
+<ul>
+<li>El cookbook que nos resuelve nuestra necesidad es <a href="https://github.com/opscode-cookbooks/database">database</a></li>
+<li>Este cookbook depende de:
+
+<ul>
+<li>mysql</li>
+<li>postgresql</li>
+<li>xfs</li>
+<li>aws</li>
+</ul></li>
+<li>Que a su vez dependen de otros cookbooks:
+
+<ul>
+<li>openssl</li>
+<li>build-essential</li>
+</ul></li>
+<li><strong>&#xBF;C&#xF3;mo descargamos estos cookbooks bajo la carpeta <code>cookbooks/</code> en nuestra nueva receta?</strong></li>
+</ul>
+</div>
+</div><div class="slide" data-transition="scrollVert"><div class="content subsection center" ref="01-chef-dev/09_berkshelf/1">
+<h1>Berkshelf</h1>
+</div>
+</div><div class="slide" data-transition="scrollVert"><div class="content smbullets" ref="01-chef-dev/09_berkshelf/2">
+<h1>Berkshelf</h1>
+
+<ul>
+<li>Es como <code>bundler</code> a <code>ruby</code> y el manejo de <code>gems</code>
+
+<ul>
+<li>Pero de <code>cookbooks</code> a <code>chef</code></li>
+</ul></li>
+<li>En vez de usar <code>Gemfile</code> usa <code>Berksfile</code></li>
+<li>La gema <code>berkshelf</code> instala el comando <code>berks</code> que simplifica las tareas</li>
+<li>Se instala con: <code>gem install berkshelf</code></li>
+</ul>
+</div>
+</div><div class="slide" data-transition="scrollVert"><div class="content commandline incremental" ref="01-chef-dev/09_berkshelf/3">
+<h1>berks cookbook NAME</h1>
+
+<p>La forma en que m&#xE1;s usaremos berkshelf es creando los cookbooks directamente con
+el comando <code>berks</code></p>
+
+<pre><code><code class="command">$ berks cookbook my_database</code>
+<code class="result">    create  my_database/files/default
+    create  my_database/templates/default
+    create  my_database/attributes
+    create  my_database/definitions
+    create  my_database/libraries
+    create  my_database/providers
+    create  my_database/recipes
+    create  my_database/resources
+    create  my_database/recipes/default.rb
+    create  my_database/metadata.rb
+    create  my_database/LICENSE
+    create  my_database/README.md
+    create  my_database/Berksfile
+    create  my_database/chefignore
+    create  my_database/.gitignore
+       run  git init from "./my_database"
+    create  my_database/Gemfile
+    create  my_database/Vagrantfile
+</code></code></pre>
+</div>
+</div><div class="slide" data-transition="scrollVert"><div class="content smbullets" ref="01-chef-dev/09_berkshelf/4">
+<h1>berks cookbook NAME</h1>
+
+<ul>
+<li>Analizamos dos archivos:
+
+<ul>
+<li><code>Vagrantfile</code></li>
+<li><code>Berksfile</code></li>
+</ul></li>
+</ul>
+</div>
+</div><div class="slide" data-transition="scrollVert"><div class="content smaller" ref="01-chef-dev/09_berkshelf/5">
+<h1>Vagrantfile</h1>
+
+<p>El archivo <code>Vagrantfile</code> creado por <code>berks</code> toma valores por defecto:</p>
+
+<pre class="sh_ruby"><code>Vagrant.configure("2") do |config|
+    config.vm.hostname = "my_database-berkshelf"
+    config.vm.box = "Berkshelf-CentOS-6.3-x86_64-minimal"
+    config.vm.box_url = "https://dl.dropbox.com.."
+    config.vm.network :private_network, ip: "33.33.33.10"
+    config.ssh.max_tries = 40
+    config.ssh.timeout   = 120
+    config.berkshelf.enabled = true
+    config.vm.provision :chef_solo do |chef|
+        chef.json = {
+            :mysql =&gt; {
+                :server_root_password =&gt; 'rootpass',
+                :server_debian_password =&gt; 'debpass',
+                :server_repl_password =&gt; 'replpass'
+            }
+        }
+
+        chef.run_list = [
+                "recipe[my_database::default]"
+        ]
+    end
+end</code></pre>
+</div>
+</div><div class="slide" data-transition="scrollVert"><div class="content commandline incremental small" ref="01-chef-dev/09_berkshelf/6">
+<h1>Vagrantfile</h1>
+
+<p>Podemos parametrizar la configuraci&#xF3;n por defecto de los <code>Vagrantfile</code> usando:</p>
+
+<pre><code><code class="command">$ berks configure</code>
+<code class="result">Enter value for chef.chef_server_url (default: 'http://localhost:4000'):  
+Enter value for chef.node_name (default: 'latitud'):  
+Enter value for chef.client_key (default: '/etc/chef/client.pem'):  
+Enter value for chef.validation_client_name (default: 'chef-validator'):  
+Enter value for chef.validation_key_path (default: '/etc/chef/validation.pem'):  
+Enter value for vagrant.vm.box (default: 'Berkshelf-CentOS-6.3-x86_64-minimal'):  
+Enter value for vagrant.vm.box_url (default: 'https://dl.dr...'):  
+Config written to: '/home/user/.berkshelf/config.json'
+</code></code></pre>
+</div>
+</div><div class="slide" data-transition="scrollVert"><div class="content smaller" ref="01-chef-dev/09_berkshelf/7">
+<h1>Mi .berksfile/config.json</h1>
+
+<h2><code>~/.berksfile/config.json</code></h2>
+
+<pre class="sh_json"><code>{
+    "chef": {...}, 
+    "cookbook": {
+            "copyright": "CeSPI - UNLP", 
+            "email": "car@cespi.unlp.edu.ar", 
+            "license": "MIT"
+    }, 
+    "ssl": {
+            "verify": true
+    }, 
+    "vagrant": {
+            "vm": {
+                "box": "ubuntu-12.04.2-cespi-amd64", 
+                "box_url": "http://vagrantbox.desarrollo..",
+                "forward_port": {}, 
+                "network": {
+                    "bridged": false, 
+                    "hostonly": "33.33.33.10"
+                    }, 
+                "provision": "chef_solo"
+            }
+    }
+}</code></pre>
+</div>
+</div><div class="slide" data-transition="scrollVert"><div class="content smaller" ref="01-chef-dev/09_berkshelf/8">
+<h1>Berksfile</h1>
+
+<p>El archivo <code>Berksfile</code> inicialmente tiene el siguiente contenido:</p>
+
+<pre class="sh_ruby"><code>site :opscode
+
+metadata</code></pre>
+
+<p>Donde la palabra <code>metadata</code> indica que deben analizarse las dependencias desde
+el archivo <code>metadata.rb</code> del cookbook como se se muestra a continuaci&#xF3;n:</p>
+
+<pre class="sh_ruby"><code>name             "my_database"
+maintainer       "CeSPI - UNLP"
+maintainer_email "car@cespi.unlp.edu.ar"
+license          "All rights reserved"
+description      "Installs/Configures my_database"
+long_description IO.read(File.join(File.dirname(__FILE__),
+'README.md'))
+version          "0.1.0"
+
+depends "database"</code></pre>
+</div>
+</div><div class="slide" data-transition="scrollVert"><div class="content commandline incremental" ref="01-chef-dev/09_berkshelf/9">
+<h1>Berksfile</h1>
+
+<pre><code><code class="command">$ berks list</code>
+<code class="result">    Cookbooks installed by your Berksfile:
+        * aws (0.100.4)
+        * build-essential (1.3.2)
+        * database (1.4.0)
+        * my_database (0.1.0)
+        * mysql (2.1.0)
+        * openssl (1.0.0)
+        * postgresql (2.1.0)
+        * xfs (1.1.0)
+</code></code></pre>
+</div>
+</div><div class="slide" data-transition="scrollVert"><div class="content smbullets" ref="01-chef-dev/09_berkshelf/10">
+<h1>Berksfile</h1>
+
+<p>Si queremos especificar versiones espec&#xED;ficas de un cookbook, podemos utilizar
+sino la sintaxis del <code>Berksfile</code> que se muestra a continuaci&#xF3;n:</p>
+
+<pre class="sh_ruby"><code>site :opscode
+
+metadata
+cookboolk 'database', '~&gt; 1.2.0'</code></pre>
+</div>
+</div><div class="slide" data-transition="scrollVert"><div class="content commandline incremental" ref="01-chef-dev/09_berkshelf/11">
+<h1>Berksfile</h1>
+
+<pre><code><code class="command">$ berks list</code>
+<code class="result">Cookbooks installed by your Berksfile:
+    * aws (0.100.4)
+    * build-essential (1.3.2)
+    * database (1.3.12)
+    * my_database (0.1.0)
+    * mysql (2.1.0)
+    * openssl (1.0.0)
+    * postgresql (2.1.0)
+    * xfs (1.1.0)
+</code></code></pre>
+</div>
+</div><div class="slide" data-transition="scrollVert"><div class="content smbullets" ref="01-chef-dev/09_berkshelf/12">
+<h1>Retomamos el ejemplo del cookbook my_database</h1>
+
+<ul>
+<li>Repetimos el objetivo de este cookbook: <em>Hagamos una nueva receta que cree una base de datos</em> <strong>mysql</strong>  <em>y un usuario que pueda conectarse</em></li>
+<li>Aconsejamos agregar una dependencia m&#xE1;s para las plataformas <em>ubuntu / debian</em>: <code>apt</code>
+
+<ul>
+<li>Analizar <a href="http://community.opscode.com/cookbooks/apt">cookbook apt</a></li>
+</ul></li>
+<li>Tenemos que instalar un mysql server:
+
+<ul>
+<li>Analizar <a href="http://community.opscode.com/cookbooks/mysql">cookbook mysql</a></li>
+</ul></li>
+<li>&#xBF;Qu&#xE9; recetas debemos indicar en el <code>runlist</code>? 
+
+<ul>
+<li>&#xA1;&#xA1;El orden es importante!!</li>
+<li><code>apt</code>, <code>mysql::server</code>, <code>my_database</code></li>
+</ul></li>
+</ul>
+</div>
+</div><div class="slide" data-transition="scrollVert"><div class="content smbullets small" ref="01-chef-dev/09_berkshelf/13">
+<h1>El recipe para my_database</h1>
+
+<pre class="sh_ruby"><code>db_super_connection = {
+  :host =&gt; "localhost", 
+  :username =&gt; 'root', 
+  :password =&gt; node['mysql']['server_root_password']
+}
+
+mysql_database node[:my_database][:name] do
+    connection db_super_connection
+    action :create
+end
+
+mysql_database_user node[:my_database][:user] do
+    connection db_super_connection
+    password node[:my_database][:password]
+    action [:create, :grant]
+end</code></pre>
+</div>
+</div><div class="slide" data-transition="scrollVert"><div class="content smbullets smaller" ref="01-chef-dev/09_berkshelf/14">
+<h1>Como queda el Vagrantfile</h1>
+
+<p>El <code>Vagrantfile</code> quedar&#xED;a:</p>
+
+<pre class="sh_ruby"><code>Vagrant.configure("2") do |config|
+    config.vm.hostname = "my-database-berkshelf"
+    config.vm.box = "ubuntu-12.04.2-cespi-amd64"
+    config.vm.box_url = "http://vagrantbox..."
+    config.vm.network :private_network, ip: "33.33.33.10"
+    config.ssh.max_tries = 40
+    config.ssh.timeout   = 120
+    config.berkshelf.enabled = true
+    config.vm.provision :chef_solo do |chef|
+        chef.json = {
+            :mysql =&gt; {
+                :server_root_password =&gt; 'rootpass',
+                :server_debian_password =&gt; 'debpass',
+                :server_repl_password =&gt; 'replpass'
+            }
+        }
+        chef.run_list = [
+                "recipe[apt]",
+                "recipe[mysql::server]",
+                "recipe[my_database::default]"
+        ]
+    end
+end</code></pre>
+</div>
+</div><div class="slide" data-transition="scrollVert"><div class="content smbullets small" ref="01-chef-dev/09_berkshelf/15">
+<h1>Nos faltan los atributos</h1>
+
+<p>Editamos <code>attributes/default.rb</code></p>
+
+<pre class="sh_ruby"><code>default[:my_database][:name] = "my_database"
+default[:my_database][:user] = "my_user"
+default[:my_database][:password] = "my_password"</code></pre>
+
+<p>Y probamos el cookbook completo con: <code>vagrant up</code></p>
 </div>
 </div><div class="slide" data-transition="scrollVert"><div class="content center subsection" ref="02-chef-prod/01-intro">
 <h1>TODO</h1>
