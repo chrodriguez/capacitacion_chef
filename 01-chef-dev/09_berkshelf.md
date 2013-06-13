@@ -240,6 +240,7 @@ El `Vagrantfile` quedaría:
 			chef.run_list = [
 					"recipe[apt]",
 					"recipe[mysql::server]",
+					"recipe[database::mysql]",
 					"recipe[my_database::default]"
 			]
 		end
