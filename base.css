@@ -5,6 +5,10 @@
   src: url(GochiHand-Regular.ttf);
 }
 
+.license {
+  font-size: 10px;
+}
+
 #preso {
   box-shadow: none;
 }

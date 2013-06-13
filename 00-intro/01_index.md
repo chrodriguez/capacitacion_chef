@@ -8,7 +8,7 @@
 por Lic. Christian A. Rodriguez [@car_unlp](https://twitter.com/car_unlp)
 </div>
 
-<div class="footer">
+<div class="footer license">
 <br />
 <a rel="license"
 href="http://creativecommons.org/licenses/by-sa/3.0/deed.es"><img alt="Licencia

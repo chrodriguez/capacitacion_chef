@@ -18,10 +18,10 @@
   * Resources y Providers
   * Atributos
   * Un recipe para ntp
+  * Berkshelf
   * Roles
   * Environments
   * Databags
-  * Berkshelf
   * Ciclo de desarrollo en Chef
   * Amazon EC2
   * Material de chef

@@ -1,0 +1,1 @@
+cookbook 'my_database', :path => '/home/car/Trabajo/cespi/chef-capacitacion/samples/01-chef-dev/03-berkshelf/my_database'
