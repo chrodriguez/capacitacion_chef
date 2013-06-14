@@ -451,6 +451,16 @@ minimizando la posibilidad de error es a trav&#xE9;s de scripts.</p>
 c&#xF3;digo tradicional, administrando la configuraci&#xF3;n de acuerdo a las buenas
 pr&#xE1;cticas.</p>
 </div>
+</div><div class="slide" data-transition="scrollVert"><div class="content bullets" ref="00-intro/04_devops/6">
+<h1>M&#xE1;s sobre Devops</h1>
+
+<ul>
+<li><a href="http://www.devops.com.ar/">Devops.com.ar</a></li>
+<li><a href="http://devopsweekly.com/">Devops weekly</a></li>
+<li><a href="http://devopsfriday.com/">Devops friday</a></li>
+<li><a href="http://itrevolution.com/">IT Revolution</a></li>
+</ul>
+</div>
 </div><div class="slide" data-transition="scrollVert"><div class="content subsection center" ref="00-intro/05_prods/1">
 <h1>Productos que simplifican las tareas</h1>
 </div>
@@ -518,9 +528,9 @@ convenciones</li>
 <li>Roles</li>
 <li>Environments</li>
 <li>Databags</li>
-<li>Ciclo de desarrollo en Chef</li>
 <li>Amazon EC2</li>
 <li>Material de chef</li>
+<li>Ciclo de desarrollo en Chef</li>
 </ul></li>
 </ul>
 </div>
@@ -2736,13 +2746,35 @@ long_description IO.read(File.join(File.dirname(__FILE__),
 'README.md'))
 version          "0.1.0"
 
+depends 'apt'
 depends "database"</code></pre>
 </div>
-</div><div class="slide" data-transition="scrollVert"><div class="content commandline incremental" ref="01-chef-dev/09_berkshelf/9">
+</div><div class="slide" data-transition="scrollVert"><div class="content smbullets small" ref="01-chef-dev/09_berkshelf/9">
+<h1>Berksfile</h1>
+
+<h2>El archivo <code>metadata.rb</code></h2>
+
+<ul>
+<li>Todo cookbook tiene una peque&#xF1;a cantidad de metadatos</li>
+<li>Estos metadatos son usados por el servidor Chef para deployarlos adecuadamente
+en los nodos</li>
+<li>El archivo <code>metadata.rb</code> no es interpretado directamente por el servidor Chef,
+sino que es compilado y almacenado como json</li>
+<li>Todos los <strong>settings</strong> del metadata que vienen por defecto son
+autoexplicativos
+
+<ul>
+<li><code>depends</code> permite indicar dependencias con otros cookbooks</li>
+<li>M&#xE1;s informaci&#xF3;n sobre los settings del<code>metadata.rb</code> son explicados <a href="http://docs.opscode.com/config_rb_metadata.html">aqu&#xED;</a></li>
+</ul></li>
+</ul>
+</div>
+</div><div class="slide" data-transition="scrollVert"><div class="content commandline incremental" ref="01-chef-dev/09_berkshelf/10">
 <h1>Berksfile</h1>
 
 <pre><code><code class="command">$ berks list</code>
 <code class="result">    Cookbooks installed by your Berksfile:
+        * apt (1.7.0)
         * aws (0.100.4)
         * build-essential (1.3.2)
         * database (1.4.0)
@@ -2753,33 +2785,43 @@ depends "database"</code></pre>
         * xfs (1.1.0)
 </code></code></pre>
 </div>
-</div><div class="slide" data-transition="scrollVert"><div class="content smbullets" ref="01-chef-dev/09_berkshelf/10">
+</div><div class="slide" data-transition="scrollVert"><div class="content smaller" ref="01-chef-dev/09_berkshelf/11">
 <h1>Berksfile</h1>
 
 <p>Si queremos especificar versiones espec&#xED;ficas de un cookbook, podemos utilizar
-sino la sintaxis del <code>Berksfile</code> que se muestra a continuaci&#xF3;n:</p>
+una sintaxis similar a la de Bunlder, tanto en <code>Berksfile</code> como en <code>metadata.rb</code></p>
 
-<pre class="sh_ruby"><code>site :opscode
+<p>En este caso editamos <code>metadata.rb</code></p>
 
-metadata
-cookboolk 'database', '~&gt; 1.2.0'</code></pre>
+<pre class="sh_ruby"><code>name             "my_database"
+maintainer       "CeSPI - UNLP"
+maintainer_email "car@cespi.unlp.edu.ar"
+license          "All rights reserved"
+description      "Installs/Configures my_database"
+long_description IO.read(File.join(File.dirname(__FILE__),
+'README.md'))
+version          "0.1.0"
+
+depends 'apt'
+depends 'database', '~&gt; 1.3.0'</code></pre>
 </div>
-</div><div class="slide" data-transition="scrollVert"><div class="content commandline incremental" ref="01-chef-dev/09_berkshelf/11">
+</div><div class="slide" data-transition="scrollVert"><div class="content commandline incremental" ref="01-chef-dev/09_berkshelf/12">
 <h1>Berksfile</h1>
 
 <pre><code><code class="command">$ berks list</code>
-<code class="result">Cookbooks installed by your Berksfile:
-    * aws (0.100.4)
-    * build-essential (1.3.2)
-    * database (1.3.12)
-    * my_database (0.1.0)
-    * mysql (2.1.0)
-    * openssl (1.0.0)
-    * postgresql (2.1.0)
-    * xfs (1.1.0)
+<code class="result">    Cookbooks installed by your Berksfile:
+        * apt (1.7.0)
+        * aws (0.100.4)
+        * build-essential (1.3.2)
+        * database (1.3.12)
+        * my_database (0.1.0)
+        * mysql (2.1.0)
+        * openssl (1.0.0)
+        * postgresql (2.1.0)
+        * xfs (1.1.0)
 </code></code></pre>
 </div>
-</div><div class="slide" data-transition="scrollVert"><div class="content smbullets" ref="01-chef-dev/09_berkshelf/12">
+</div><div class="slide" data-transition="scrollVert"><div class="content smbullets small" ref="01-chef-dev/09_berkshelf/13">
 <h1>Retomamos el ejemplo del cookbook my_database</h1>
 
 <ul>
@@ -2798,11 +2840,13 @@ cookboolk 'database', '~&gt; 1.2.0'</code></pre>
 
 <ul>
 <li>&#xA1;&#xA1;El orden es importante!!</li>
-<li><code>apt</code>, <code>mysql::server</code>, <code>my_database</code></li>
+<li><code>apt</code>, <code>mysql::server</code>, <code>database::mysql</code>, <code>my_database</code></li>
 </ul></li>
+<li>Analizamos cada una de las recetas incluidas en este runlist para ver qu&#xE9;
+hacen. <em>Salvo <code>my_database</code>porque es la que debemos escribir</em></li>
 </ul>
 </div>
-</div><div class="slide" data-transition="scrollVert"><div class="content smbullets small" ref="01-chef-dev/09_berkshelf/13">
+</div><div class="slide" data-transition="scrollVert"><div class="content smbullets small" ref="01-chef-dev/09_berkshelf/14">
 <h1>El recipe para my_database</h1>
 
 <pre class="sh_ruby"><code>db_super_connection = {
@@ -2818,14 +2862,13 @@ end
 
 mysql_database_user node[:my_database][:user] do
     connection db_super_connection
+    database_name node[:my_database][:name]
     password node[:my_database][:password]
     action [:create, :grant]
 end</code></pre>
 </div>
-</div><div class="slide" data-transition="scrollVert"><div class="content smbullets smaller" ref="01-chef-dev/09_berkshelf/14">
+</div><div class="slide" data-transition="scrollVert"><div class="content smbullets smaller" ref="01-chef-dev/09_berkshelf/15">
 <h1>Como queda el Vagrantfile</h1>
-
-<p>El <code>Vagrantfile</code> quedar&#xED;a:</p>
 
 <pre class="sh_ruby"><code>Vagrant.configure("2") do |config|
     config.vm.hostname = "my-database-berkshelf"
@@ -2851,8 +2894,10 @@ end</code></pre>
         ]
     end
 end</code></pre>
+
+<p><strong>Observar c&#xF3;mo se indican los recipes. Difiere de c&#xF3;mo lo hac&#xED;amos</strong></p>
 </div>
-</div><div class="slide" data-transition="scrollVert"><div class="content smbullets small" ref="01-chef-dev/09_berkshelf/15">
+</div><div class="slide" data-transition="scrollVert"><div class="content smbullets small" ref="01-chef-dev/09_berkshelf/16">
 <h1>Nos faltan los atributos</h1>
 
 <p>Editamos <code>attributes/default.rb</code></p>
@@ -2860,8 +2905,602 @@ end</code></pre>
 <pre class="sh_ruby"><code>default[:my_database][:name] = "my_database"
 default[:my_database][:user] = "my_user"
 default[:my_database][:password] = "my_password"</code></pre>
+</div>
+</div><div class="slide" data-transition="scrollVert"><div class="content smbullets" ref="01-chef-dev/09_berkshelf/17">
+<h1>Poder usar Vagrant con Berkshelf</h1>
 
-<p>Y probamos el cookbook completo con: <code>vagrant up</code></p>
+<ul>
+<li><code>Berkshelf</code> nos ayud&#xF3; much&#xED;simo hasta el momento</li>
+<li>Pero <code>Vagrant</code> a&#xFA;n no sabe donde est&#xE1;n los cookbooks que son dependencias</li>
+<li>Nos falta instalar el plugin de <code>Vagrant</code> que lo integra con <code>Berkshelf</code>:
+
+<ul>
+<li>M&#xE1;s informaci&#xF3;n en <a href="https://github.com/riotgames/vagrant-berkshelf">github</a></li>
+</ul></li>
+</ul>
+
+<p><code>$ vagrant plugin install vagrant-berkshelf</code></p>
+</div>
+</div><div class="slide" data-transition="scrollVert"><div class="content smbullets small" ref="01-chef-dev/09_berkshelf/18">
+<h1>Probamos la receta</h1>
+
+<ul>
+<li>Iniciamos la m&#xE1;quina: <code>vagrant up</code></li>
+<li>Nos conectamos: <code>vagrant ssh</code></li>
+<li>Verificamos todo:
+
+<ul>
+<li>Conectamos a mysql como root: <code>mysql -uroot -prootpass</code></li>
+<li>Verificamos las bases de datos: <code>mysql&gt; show databases;</code></li>
+<li>Verificamos los permisos del usuario: <code>mysql&gt; show grants for 'my_database_user'@'localhost';</code> </li>
+<li>Salimos de mysql y volvemos a ingresar como el nuevo usuario: <code>mysql -umy_user -pmy_password</code></li>
+<li>Verificamos las bases de datos que ve el usuario: <code>mysql&gt; show databases;</code></li>
+</ul></li>
+</ul>
+</div>
+</div><div class="slide" data-transition="scrollVert"><div class="content commandline incremental" ref="01-chef-dev/09_berkshelf/19">
+<h1>Descargar el ejemplo</h1>
+
+<h2>Para descargar el ejemplo dado</h2>
+
+<pre><code><code class="command">$ git clone https://github.com/chrodriguez/capacitacion_chef.git</code>
+<code class="command">$ cd capacitacion_chef </code>
+<code class="command">$ cd samples/01-chef-dev/03-berkshelf</code>
+</code></pre>
+</div>
+</div><div class="slide" data-transition="scrollVert"><div class="content subsection center" ref="01-chef-dev/10_roles/1">
+<h1>Roles</h1>
+</div>
+</div><div class="slide" data-transition="scrollVert"><div class="content smbullets" ref="01-chef-dev/10_roles/2">
+<h1>Roles</h1>
+
+<ul>
+<li>Forma de definir determinados patrones y procesos </li>
+<li>Un role es un conjunto de cero o m&#xE1;s <code>atributtes</code> y un <code>run_lists</code></li>
+<li>Un nodo podr&#xE1; tener cero o m&#xE1;s roles asignados</li>
+<li>Los atributos del nodo ser&#xE1;n calculados y mezclados al inicio de cada corrida
+de Chef, considerando las precedencias de los mismos</li>
+</ul>
+</div>
+</div><div class="slide" data-transition="scrollVert"><div class="content smbullets" ref="01-chef-dev/10_roles/3">
+<h1>Roles Attributes</h1>
+
+<ul>
+<li>Un attribute puede definirse en un role y luego es utilizado para sobreescribir el
+valor por defecto en un node.</li>
+<li>En cada corrida de Chef, estos attributes son comparados con los ya
+disponibles en el node.
+
+<ul>
+<li>Cuando la precedencia de los attributes en el role, tengan mayor precedencia
+que los del node, entonces Chef aplicar&#xE1; estos nuevos valores durante la
+corrida de Chef</li>
+</ul></li>
+<li>Un role attribute podr&#xE1; ser:
+
+<ul>
+<li><code>default</code> attribute</li>
+<li><code>override</code> attribute</li>
+</ul></li>
+<li>Nunca un role, podr&#xE1; definir un <code>normal</code> attribute</li>
+</ul>
+</div>
+</div><div class="slide" data-transition="scrollVert"><div class="content smbullets" ref="01-chef-dev/10_roles/4">
+<h1>Formato de los Roles</h1>
+
+<ul>
+<li>Los roles podr&#xE1;n definirse usando:
+
+<ul>
+<li><strong>DSL Ruby</strong>: se escriben en ruby, pero se convierten en JSON al subirse al
+repositorio Chef. </li>
+<li><strong>JSON</strong>: este formato mapea directamente con lo que veamos para la DSL de
+Ruby. No ser&#xE1; necesario compilarlo como sucede con Ruby antes de subirlo al
+repositorio Chef</li>
+</ul></li>
+</ul>
+</div>
+</div><div class="slide" data-transition="scrollVert"><div class="content smbullets smaller" ref="01-chef-dev/10_roles/5">
+<h1>Roles usando Ruby DSL</h1>
+
+<p>Un archivo de role, usando Ruby DSL debe tener extensi&#xF3;n <code>.rb</code> y estar dentro
+del directorio <code>roles/</code> del repositorio Chef</p>
+
+<ul>
+<li><code>default_attributes</code>: opcional. Hash de attributes a aplicar a un node,
+asumiendo que el node no dispone de un valor para estos attributes. Si m&#xE1;s de
+un role, hacen referencia al mismo valor, el &#xFA;ltimo aplicado ganar&#xE1;</li>
+<li><code>description</code>: texto que describe la funci&#xF3;n del role</li>
+<li><code>env_run_lists</code>: permite definir <code>run_lists</code> por environments. En caso de
+usarse, es un override del attributo <code>run_lists</code> explicado m&#xE1;s adelante</li>
+<li><code>name</code>: nombre del role que debe ser &#xFA;nico en todo el ecosistema de Chef. El
+nombre puede formarse de letras (min&#xFA;sculas y may&#xFA;suclas), n&#xFA;meros, gui&#xF3;n
+bajo, y gui&#xF3;n medio: <code>[A-Z][a-z][0-9] and [_-]</code></li>
+<li><code>override_attributes</code>: opcional. Hash de attributes a aplicar a un node,
+incluso si el node ya dispone de estos valores para estos attributes. Aplica
+la misma regla que para el caso <code>default_attributes</code></li>
+<li><code>run_list</code>: lista de recipes y/o roles a aplicar en el orden provisto</li>
+</ul>
+</div>
+</div><div class="slide" data-transition="scrollVert"><div class="content smaller" ref="01-chef-dev/10_roles/6">
+<h1>Ejemplo de un role</h1>
+
+<pre class="sh_ruby"><code>name "webserver"
+description "base role for systems that serve HTTP traffic"
+run_list ("recipe[apache2]", "recipe[apache2::mod_ssl]", 
+          "role[monitor]")
+env_run_lists(
+    "prod" =&gt; ["recipe[apache2]"], 
+    "staging" =&gt; ["recipe[apache2::staging]"], 
+    "_default" =&gt; [])
+default_attributes(
+    "apache2" =&gt; { "listen_ports" =&gt; [ "80", "443" ] })
+override_attributes( 
+    "apache2" =&gt; { "max_children" =&gt; "50" })</code></pre>
+</div>
+</div><div class="slide" data-transition="scrollVert"><div class="content smbullets smaller" ref="01-chef-dev/10_roles/7">
+<h1>El mismo role usando JSON</h1>
+
+<p>Podemos ver que el formato JSON agrega dos atributos: <code>chef_type</code> y <code>json_class</code></p>
+
+<pre class="sh_json"><code>{
+    "name": "webserver",
+    "chef_type": "role",
+    "json_class": "Chef::Role",
+    "default_attributes": {
+        "apache2": {
+            "listen_ports": [
+                "80",
+                "443"
+            ]
+        }
+    },
+    "description": "base role for systems that serve HTTP",
+    "run_list": [
+        "recipe[apache2]",
+        "recipe[apache2::mod_ssl]",
+        "role[montior]"
+    ],
+    ...
+    ...</code></pre>
+</div>
+</div><div class="slide" data-transition="scrollVert"><div class="content smbullets smaller" ref="01-chef-dev/10_roles/8">
+<h1>El mismo role usando JSON</h1>
+
+<pre class="sh_json"><code>    ...
+    ...
+    "env_run_lists" : {
+        "production" : [],
+        "preprod" : [],
+        "dev": [
+            "role[base]",
+            "recipe[apache]",
+            "recipe[apache::copy_dev_configs]",
+        ],
+         "test": [
+            "role[base]",
+            "recipe[apache]"
+        ]
+     },
+    "override_attributes": {
+        "apache2": {
+            "max_children": "50"
+        }
+    }
+}</code></pre>
+</div>
+</div><div class="slide" data-transition="scrollVert"><div class="content smbullets" ref="01-chef-dev/10_roles/9">
+<h1>Manejo de roles</h1>
+
+<ul>
+<li>Chef provee diversas formas de gestionar los roles en un ambiente de
+producci&#xF3;n y distribuido como veremos m&#xE1;s adelante</li>
+<li>Para el caso de uso con Vagrant, pueden usarse roles que se configuran desde
+<code>Vagrantfile</code></li>
+</ul>
+</div>
+</div><div class="slide" data-transition="scrollVert"><div class="content subsection center" ref="01-chef-dev/11_environments/1">
+<h1>Environments</h1>
+</div>
+</div><div class="slide" data-transition="scrollVert"><div class="content smbullets small" ref="01-chef-dev/11_environments/2">
+<h1>Environments</h1>
+
+<ul>
+<li>Permite mapear ambientes reales en configuraciones que manejar&#xE1; Chef</li>
+<li>En el ecosistema de Chef, siempre existir&#xE1; un environment llamado <code>_default</code>
+
+<ul>
+<li>No podr&#xE1; modificarse</li>
+<li>No podr&#xE1; eliminarse</li>
+</ul></li>
+<li>Se podr&#xE1;n crear tantos environments como se desee, por ejemplo:
+
+<ul>
+<li>Production</li>
+<li>Testing</li>
+<li>Staging</li>
+<li>Development</li>
+</ul></li>
+<li>Generalmente se asocia a un environment las <strong>versiones de cookbooks</strong></li>
+</ul>
+</div>
+</div><div class="slide" data-transition="scrollVert"><div class="content smbullets" ref="01-chef-dev/11_environments/3">
+<h1>El environment _default</h1>
+
+<ul>
+<li>Esto garantiza que cualquier corrida de Chef cuenta con un environment</li>
+<li>No podr&#xE1; modificarse de ninguna forma</li>
+<li>Cualquier attribute o cookbook a restringir que desee asociarse a este environment no
+podr&#xE1; hacerse.
+
+<ul>
+<li>Solo ser&#xE1; posible creando nuevos environments</li>
+</ul></li>
+</ul>
+</div>
+</div><div class="slide" data-transition="scrollVert"><div class="content smbullets" ref="01-chef-dev/11_environments/4">
+<h1>Environment Attributes</h1>
+
+<ul>
+<li>Un attribute puede definirse en un environment y luego es utilizado para sobreescribir el
+valor por defecto en un node.</li>
+<li>En cada corrida de Chef, estos attributes son comparados con los ya
+disponibles en el node.
+
+<ul>
+<li>Cuando la precedencia de los attributes en el environment, tengan mayor precedencia
+que los del node, entonces Chef aplicar&#xE1; estos nuevos valores durante la
+corrida de Chef</li>
+</ul></li>
+<li>Un environment attribute podr&#xE1; ser:
+
+<ul>
+<li><code>default</code> attribute</li>
+<li><code>override</code> attribute</li>
+</ul></li>
+<li>Nunca un role, podr&#xE1; definir un <code>normal</code> attribute</li>
+</ul>
+</div>
+</div><div class="slide" data-transition="scrollVert"><div class="content smbullets" ref="01-chef-dev/11_environments/5">
+<h1>Formato de los Environments</h1>
+
+<ul>
+<li>Los environments podr&#xE1;n definirse usando:
+
+<ul>
+<li><strong>DSL Ruby</strong>: se escriben en ruby, pero se convierten en JSON al subirse al
+repositorio Chef. </li>
+<li><strong>JSON</strong>: este formato mapea directamente con lo que veamos para la DSL de
+Ruby. No ser&#xE1; necesario compilarlo como sucede con Ruby antes de subirlo al
+repositorio Chef</li>
+</ul></li>
+</ul>
+</div>
+</div><div class="slide" data-transition="scrollVert"><div class="content smbullets smaller" ref="01-chef-dev/11_environments/6">
+<h1>Environments usando Ruby DSL</h1>
+
+<p>Un archivo de environments, usando Ruby DSL debe tener extensi&#xF3;n <code>.rb</code> y estar dentro
+del directorio <code>environments/</code> del repositorio Chef</p>
+
+<ul>
+<li><code>cookbook</code>: Una restricci&#xF3;n sobre la versi&#xF3;n de un cookbook espec&#xED;fico</li>
+<li><code>cookbook_versions</code>: Una restricci&#xF3;n sobre la versi&#xF3;n de un grupo de cookbooks</li>
+<li><code>default_attributes</code>: opcional. Hash de attributes a aplicar a un node,
+asumiendo que el node no dispone de un valor para estos attributes</li>
+<li><code>description</code>: texto que describe la funci&#xF3;n del environment</li>
+<li><code>name</code>: nombre del environment que debe ser &#xFA;nico en todo el ecosistema de Chef. El
+nombre puede formarse de letras (min&#xFA;sculas y may&#xFA;suclas), n&#xFA;meros, gui&#xF3;n
+bajo, y gui&#xF3;n medio: <code>[A-Z][a-z][0-9] and [_-]</code></li>
+<li><code>override_attributes</code>: opcional. Hash de attributes a aplicar a un node,
+incluso si el node ya dispone de estos valores para estos attributes</li>
+</ul>
+</div>
+</div><div class="slide" data-transition="scrollVert"><div class="content smaller" ref="01-chef-dev/11_environments/7">
+<h1>Ejemplo de un environment</h1>
+
+<pre class="sh_ruby"><code>name "dev"
+description "The development environment"
+cookbook_versions  "couchdb" =&gt; "= 11.0.0"
+default_attributes(
+    "apache2" =&gt; { 
+        "listen_ports" =&gt; [ "80", "443" ] 
+    })</code></pre>
+</div>
+</div><div class="slide" data-transition="scrollVert"><div class="content smbullets smaller" ref="01-chef-dev/11_environments/8">
+<h1>El mismo role usando JSON</h1>
+
+<p>Podemos ver que el formato JSON agrega dos atributos: <code>chef_type</code> y <code>json_class</code></p>
+
+<pre class="sh_json"><code>{
+    "name": "dev",
+    "default_attributes": {
+        "apache2": {
+            "listen_ports": [
+                "80",
+                "443"
+            ]
+        }
+    },
+    "json_class": "Chef::Environment",
+    "description": "",
+     "cookbook_versions": {
+        "couchdb": "= 11.0.0"
+    },
+    "chef_type": "environment"
+}</code></pre>
+</div>
+</div><div class="slide" data-transition="scrollVert"><div class="content smbullets" ref="01-chef-dev/11_environments/9">
+<h1>Manejo de environments</h1>
+
+<ul>
+<li>Chef provee diversas formas de gestionar los roles en un ambiente de
+producci&#xF3;n y distribuido como veremos m&#xE1;s adelante</li>
+<li>Para el caso de uso con Vagrant, pueden usarse environments que se configuran desde
+<code>Vagrantfile</code></li>
+</ul>
+</div>
+</div><div class="slide" data-transition="scrollVert"><div class="content subsection center" ref="01-chef-dev/12_data_bags/1">
+<h1>Data Bags</h1>
+</div>
+</div><div class="slide" data-transition="scrollVert"><div class="content smbullets small" ref="01-chef-dev/12_data_bags/2">
+<h1>Data Bags</h1>
+
+<ul>
+<li>Un data bag es una variable global </li>
+<li>Es almacenada como JSON</li>
+<li>Es accesible mediante el servidor Chef</li>
+<li>Los data bags son indexados para realizar b&#xFA;squedas</li>
+<li>Pueden accederse desde: 
+
+<ul>
+<li>Recipes</li>
+<li>Durante una b&#xFA;squeda</li>
+</ul></li>
+<li>Los datos almacenados en un data bag var&#xED;an
+
+<ul>
+<li>Generalmente se incluye informaci&#xF3;n sensible: <em>password de base de datos</em></li>
+</ul></li>
+</ul>
+</div>
+</div><div class="slide" data-transition="scrollVert"><div class="content smbullets" ref="01-chef-dev/12_data_bags/3">
+<h1>Creando Data Bags</h1>
+
+<ul>
+<li>Podemos crear un data bag usando:
+
+<ul>
+<li>El comando <code>knife</code> como veremos m&#xE1;s adelante</li>
+<li>Creando un directorio bajo la carpeta <code>data_bags</code> con el nombre del <code>bag</code> y
+dentro del mismo un archivo con el nombre del <code>item</code> y extensi&#xF3;n <code>.json</code></li>
+</ul></li>
+</ul>
+</div>
+</div><div class="slide" data-transition="scrollVert"><div class="content commandline incremental" ref="01-chef-dev/12_data_bags/4">
+<h1>Creando Data Bags</h1>
+
+<pre><code><code class="command">$ mkdir data_bags</code>
+<code class="command">$ mkdir data_bags/admins</code>
+<code class="command">$ vi data_bags/admins/car.json</code>
+</code></pre>
+</div>
+</div><div class="slide" data-transition="scrollVert"><div class="content small" ref="01-chef-dev/12_data_bags/5">
+<h1>La estructura de directorios</h1>
+
+<pre class="sh_sh"><code>data_bags
+ |_admins
+        |_charlie.json
+        |_bob.json
+        |_tom.json
+ |_db_users
+        |_charlie.json
+        |_bob.json
+        |_sarah.json
+ |_db_config
+        |_small.json
+        |_medium.json
+        |_large.json</code></pre>
+
+<p>donde <code>_admins</code>, <code>_db_users</code> y <code>_db_config</code> son nombres de data bags individuales, y todos los archivos que terminan con <code>.json</code> son &#xED;tems individuales</p>
+</div>
+</div><div class="slide" data-transition="scrollVert"><div class="content smbullets" ref="01-chef-dev/12_data_bags/6">
+<h1>Data Bag Items</h1>
+
+<ul>
+<li>Un data bag &#xED;tem es un contenedor de datos, donde cada uno es un archivo JSON</li>
+<li>El &#xFA;nico requerimiento estructural de un &#xED;tem es que tenga un <code>id</code></li>
+</ul>
+
+<h2>Ejemplo:</h2>
+
+<pre class="sh_json"><code>{
+    "id": "ITEM_NAME"
+    "key": "value"
+}</code></pre>
+</div>
+</div><div class="slide" data-transition="scrollVert"><div class="content smbullets" ref="01-chef-dev/12_data_bags/7">
+<h1>Data Bags encriptados</h1>
+
+<ul>
+<li>El contenido de un data bag puede encriptarse usando una <a href="https://en.wikipedia.org/wiki/Symmetric-key_algorithm">encripci&#xF3;n de clave compartida</a></li>
+<li>Esto permite a los data bags almacenar informaci&#xF3;n confidencial</li>
+<li>Lo veremos m&#xE1;s en detalle cuando trabajemos usando knife</li>
+</ul>
+</div>
+</div><div class="slide" data-transition="scrollVert"><div class="content smbullets" ref="01-chef-dev/12_data_bags/8">
+<h1>Usando Data Bags</h1>
+
+<ul>
+<li>Es posible buscar sobre los data bags almacenados en el server Chef
+
+<ul>
+<li>No nos sirve si usamos chef-solo</li>
+</ul></li>
+<li>Leyendo directamente del data bag que necesitemos</li>
+</ul>
+</div>
+</div><div class="slide" data-transition="scrollVert"><div class="content small" ref="01-chef-dev/12_data_bags/9">
+<h1>Usando Data Bags</h1>
+
+<p>El siguiente ejemplo lee todos los items del data bag admins creando cada
+usuario</p>
+
+<pre class="sh_ruby"><code>admins = data_bag('admins')
+admins.each do |login|
+    admin = data_bag_item('admins', login)
+    home = "/home/#{login}"
+
+    user(login) do
+        uid       admin['uid']
+        gid       admin['gid']
+        shell     admin['shell']
+        comment   admin['comment']
+        home      home
+        supports  :manage_home =&gt; true
+    end
+end</code></pre>
+</div>
+</div><div class="slide" data-transition="scrollVert"><div class="content commandline incremental" ref="01-chef-dev/12_data_bags/10">
+<h1>Hagamos este ejemplo</h1>
+
+<p>Creamos un directorio para el data bag <code>admins</code> y un nuevo cookbook para esta prueba: <strong>my_databag</strong></p>
+
+<pre><code><code class="command">$ mkdir -p data_bags/admins</code>
+<code class="command">$ berks cookbook my_database</code>
+<code class="result">    create  my_databag/files/default
+    create  my_databag/templates/default
+    create  my_databag/attributes
+    create  my_databag/definitions
+    create  my_databag/libraries
+    create  my_databag/providers
+    create  my_databag/recipes
+    create  my_databag/resources
+    create  my_databag/recipes/default.rb
+    create  my_databag/metadata.rb
+    create  my_databag/LICENSE
+    create  my_databag/README.md
+    create  my_databag/Berksfile
+    create  my_databag/chefignore
+    create  my_databag/.gitignore
+         run  git init from "./my_databag"
+    create  my_databag/Gemfile
+    create  my_databag/Vagrantfile
+</code></code></pre>
+</div>
+</div><div class="slide" data-transition="scrollVert"><div class="content smbullets smaller" ref="01-chef-dev/12_data_bags/11">
+<h1>Creamos los data bag items</h1>
+
+<p>Bajo el directorio <code>data_bags/admins</code> creamos los archivos</p>
+
+<h2><code>juan.json</code></h2>
+
+<pre class="sh_json"><code>{
+    "id": "juan",
+    "uid": 5000,
+    "gid": "users",
+    "shell": "/bin/bash",
+    "comment": "Este usuario es Juan"
+}</code></pre>
+
+<h2><code>pedro.json</code></h2>
+
+<pre class="sh_json"><code>{
+    "id": "pedro",
+    "uid": 5001,
+    "gid": "users",
+    "shell": "/bin/bash",
+    "comment": "Este usuario es Pedro"
+}</code></pre>
+</div>
+</div><div class="slide" data-transition="scrollVert"><div class="content smaller" ref="01-chef-dev/12_data_bags/12">
+<h1>La receta que crea los usuarios</h1>
+
+<p>Copiamos el ejemplo dado anteriormente bajo <code>recipes/default.rb</code></p>
+
+<pre class="sh_ruby"><code>admins = data_bag('admins')
+admins.each do |login|
+    admin = data_bag_item('admins', login)
+    home = "/home/#{login}"
+
+    user(login) do
+        uid       admin['uid']
+        gid       admin['gid']
+        shell     admin['shell']
+        comment   admin['comment']
+        home      home
+        supports  :manage_home =&gt; true
+    end
+end</code></pre>
+</div>
+</div><div class="slide" data-transition="scrollVert"><div class="content smaller" ref="01-chef-dev/12_data_bags/13">
+<h1>Editamos el Vagrantfile</h1>
+
+<p>El <code>Vagrantfile</code> debe quedar as&#xED;:</p>
+
+<pre class="sh_ruby"><code>Vagrant.configure("2") do |config|
+    config.vm.hostname = "my-databag-berkshelf"
+    config.vm.box = "ubuntu-12.04.2-cespi-amd64"
+    config.vm.box_url = "http://vagrantbox.de.."
+    config.vm.network :private_network, ip: "33.33.33.20"
+    config.ssh.max_tries = 40
+    config.ssh.timeout   = 120
+    config.berkshelf.enabled = true
+    config.vm.provision :chef_solo do |chef|
+        chef.data_bags_path = "../data_bags"
+        chef.json = {
+            :mysql =&gt; {
+                :server_root_password =&gt; 'rootpass',
+                :server_debian_password =&gt; 'debpass',
+                :server_repl_password =&gt; 'replpass'
+            }
+        }
+        chef.run_list = [
+                "recipe[my_databag::default]"
+        ]
+    end
+end</code></pre>
+</div>
+</div><div class="slide" data-transition="scrollVert"><div class="content subsection center" ref="01-chef-dev/13_aws/1">
+<p><img src="./file/01-chef-dev/aws.png" alt="AWS"/>
+
+<h1>Amazon EC2</h1>
+</p>
+</div>
+</div><div class="slide" data-transition="scrollVert"><div class="content smbullets" ref="01-chef-dev/13_aws/2">
+<h1>Amazon EC2</h1>
+
+<ul>
+<li>Amazon provee un servicio de <a href="http://en.wikipedia.org/wiki/Platform_as_a_service">PaaS</a></li>
+<li>Se maneja con templates llamados <a href="https://aws.amazon.com/amis/">AMI</a></li>
+<li>Tiene un costo, pero puede usarse sin costo durante 1 a&#xF1;o, una cantidad de
+horas prefijada</li>
+<li>Chef se integra con cualquier m&#xE1;quina, no ser&#xED;a un problema Amazon EC2</li>
+<li>Vagrant a partir de la versi&#xF3;n 1.2.x soporta como provider Amazon EC2</li>
+</ul>
+</div>
+</div><div class="slide" data-transition="scrollVert"><div class="content smbullets small" ref="01-chef-dev/13_aws/3">
+<h1>Algunos cookbooks con soporte en Amazon EC2</h1>
+
+<ul>
+<li>En los siguientes cookbooks hay un Vagrantfile-aws que debe linkearse y usarse
+con la clave propia de AWS EC2
+
+<ul>
+<li><a href="https://github.com/Desarrollo-CeSPI/choique_cookbook">Cookbook de choique</a></li>
+<li><a href="https://github.com/Desarrollo-CeSPI/kimkelen_cookbook">Cookbook de Kimkelen</a></li>
+<li><a href="https://github.com/Desarrollo-CeSPI/meran_cookbook">Cookbook de Meran</a></li>
+</ul></li>
+<li>El problema es que las m&#xE1;quinas de Amazon no tienen <em>chef</em> por lo que hay un
+plugin de Vagrant que soluciona este problema: <a href="https://github.com/schisamo/vagrant-omnibus">Vagrant Omnibus</a>
+
+<ul>
+<li><code>$ vagrant plugin install vagrant-omnibus</code></li>
+</ul></li>
+</ul>
+
+<h2>&#xBF;Como probarlo?</h2>
+
+<p><code>$ vagrant up --provider=aws</code></p>
 </div>
 </div><div class="slide" data-transition="scrollVert"><div class="content center subsection" ref="02-chef-prod/01-intro">
 <h1>TODO</h1>
