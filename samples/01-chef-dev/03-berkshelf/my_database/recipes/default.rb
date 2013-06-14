@@ -16,6 +16,7 @@ end
 
 mysql_database_user node[:my_database][:user] do
   connection db_super_connection
+  database_name node[:my_database][:name]
   password node[:my_database][:password]
   action [:create, :grant]
 end

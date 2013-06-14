@@ -57,3 +57,10 @@ Los scripts generan nuevos entornos virtuales que deben ser versionados como el
 código tradicional, administrando la configuración de acuerdo a las buenas
 prácticas.
 
+!SLIDE bullets transition=scrollVert
+# Más sobre Devops
+
+* [Devops.com.ar](http://www.devops.com.ar/)
+* [Devops weekly](http://devopsweekly.com/)
+* [Devops friday](http://devopsfriday.com/)
+* [IT Revolution](http://itrevolution.com/)

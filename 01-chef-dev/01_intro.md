@@ -22,7 +22,7 @@
   * Roles
   * Environments
   * Databags
-  * Ciclo de desarrollo en Chef
   * Amazon EC2
   * Material de chef
+  * Ciclo de desarrollo en Chef
 

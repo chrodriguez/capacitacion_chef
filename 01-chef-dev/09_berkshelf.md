@@ -140,14 +140,30 @@ el archivo `metadata.rb` del cookbook como se se muestra a continuación:
 	'README.md'))
 	version          "0.1.0"
 
+	depends 'apt'
 	depends "database"
 
+!SLIDE smbullets small transition=scrollVert
+# Berksfile 
+
+## El archivo `metadata.rb`
+
+* Todo cookbook tiene una pequeña cantidad de metadatos
+* Estos metadatos son usados por el servidor Chef para deployarlos adecuadamente
+  en los nodos
+* El archivo `metadata.rb` no es interpretado directamente por el servidor Chef,
+  sino que es compilado y almacenado como json
+* Todos los **settings** del metadata que vienen por defecto son
+  autoexplicativos
+  * `depends` permite indicar dependencias con otros cookbooks
+  * Más información sobre los settings del` metadata.rb` son explicados [aquí](http://docs.opscode.com/config_rb_metadata.html)
 
 !SLIDE commandline incremental transition=scrollVert
 # Berksfile
 
 	$ berks list
 		Cookbooks installed by your Berksfile:
+			* apt (1.7.0)
 			* aws (0.100.4)
 			* build-essential (1.3.2)
 			* database (1.4.0)
@@ -157,33 +173,45 @@ el archivo `metadata.rb` del cookbook como se se muestra a continuación:
 			* postgresql (2.1.0)
 			* xfs (1.1.0)
 
-!SLIDE smbullets transition=scrollVert
+!SLIDE smaller transition=scrollVert
 # Berksfile
 
 Si queremos especificar versiones específicas de un cookbook, podemos utilizar
-sino la sintaxis del `Berksfile` que se muestra a continuación:
+una sintaxis similar a la de Bunlder, tanto en `Berksfile` como en `metadata.rb`
+
+En este caso editamos `metadata.rb`
+
 
 	@@@ ruby
-	site :opscode
-	
-	metadata
-	cookboolk 'database', '~> 1.2.0'
+	name             "my_database"
+	maintainer       "CeSPI - UNLP"
+	maintainer_email "car@cespi.unlp.edu.ar"
+	license          "All rights reserved"
+	description      "Installs/Configures my_database"
+	long_description IO.read(File.join(File.dirname(__FILE__),
+	'README.md'))
+	version          "0.1.0"
+
+	depends 'apt'
+	depends 'database', '~> 1.3.0'
 
 !SLIDE commandline incremental transition=scrollVert
 # Berksfile
 
 	$ berks list
-	Cookbooks installed by your Berksfile:
-		* aws (0.100.4)
-		* build-essential (1.3.2)
-		* database (1.3.12)
-		* my_database (0.1.0)
-		* mysql (2.1.0)
-		* openssl (1.0.0)
-		* postgresql (2.1.0)
-		* xfs (1.1.0)
+		Cookbooks installed by your Berksfile:
+			* apt (1.7.0)
+			* aws (0.100.4)
+			* build-essential (1.3.2)
+			* database (1.3.12)
+			* my_database (0.1.0)
+			* mysql (2.1.0)
+			* openssl (1.0.0)
+			* postgresql (2.1.0)
+			* xfs (1.1.0)
 
-!SLIDE smbullets transition=scrollVert
+
+!SLIDE smbullets small transition=scrollVert
 # Retomamos el ejemplo del cookbook my_database
 
 * Repetimos el objetivo de este cookbook: *Hagamos una nueva receta que cree una base de datos* **mysql**  *y un usuario que pueda conectarse*
@@ -193,7 +221,9 @@ sino la sintaxis del `Berksfile` que se muestra a continuación:
   * Analizar [cookbook mysql](http://community.opscode.com/cookbooks/mysql)
 * ¿Qué recetas debemos indicar en el `runlist`? 
   * ¡¡El orden es importante!!
-  * `apt`, `mysql::server`, `my_database`
+  * `apt`, `mysql::server`, `database::mysql`, `my_database`
+* Analizamos cada una de las recetas incluidas en este runlist para ver qué
+	hacen. *Salvo `my_database`porque es la que debemos escribir*
 
 !SLIDE smbullets small transition=scrollVert
 # El recipe para my_database
@@ -212,14 +242,13 @@ sino la sintaxis del `Berksfile` que se muestra a continuación:
 
 	mysql_database_user node[:my_database][:user] do
 		connection db_super_connection
+		database_name node[:my_database][:name]
 		password node[:my_database][:password]
 		action [:create, :grant]
 	end
 
 !SLIDE smbullets smaller transition=scrollVert
 # Como queda el Vagrantfile
-El `Vagrantfile` quedaría:
-
 	@@@ ruby
 	Vagrant.configure("2") do |config|
 		config.vm.hostname = "my-database-berkshelf"
@@ -246,6 +275,8 @@ El `Vagrantfile` quedaría:
 		end
 	end
 
+**Observar cómo se indican los recipes. Difiere de cómo lo hacíamos**
+
 !SLIDE smbullets small transition=scrollVert
 # Nos faltan los atributos
 Editamos `attributes/default.rb`
@@ -255,5 +286,32 @@ Editamos `attributes/default.rb`
 	default[:my_database][:user] = "my_user"
 	default[:my_database][:password] = "my_password"
 
-Y probamos el cookbook completo con: `vagrant up`
 
+!SLIDE smbullets transition=scrollVert
+# Poder usar Vagrant con Berkshelf
+
+* `Berkshelf` nos ayudó muchísimo hasta el momento
+* Pero `Vagrant` aún no sabe donde están los cookbooks que son dependencias
+* Nos falta instalar el plugin de `Vagrant` que lo integra con `Berkshelf`:
+  * Más información en [github](https://github.com/riotgames/vagrant-berkshelf)
+
+`$ vagrant plugin install vagrant-berkshelf`
+
+!SLIDE smbullets small transition=scrollVert
+# Probamos la receta 
+* Iniciamos la máquina: `vagrant up`
+* Nos conectamos: `vagrant ssh`
+* Verificamos todo:
+  * Conectamos a mysql como root: `mysql -uroot -prootpass`
+  * Verificamos las bases de datos: `mysql> show databases;`
+  * Verificamos los permisos del usuario: `mysql> show grants for 'my_database_user'@'localhost';` 
+  * Salimos de mysql y volvemos a ingresar como el nuevo usuario: `mysql -umy_user -pmy_password`
+  * Verificamos las bases de datos que ve el usuario: `mysql> show databases;`
+
+!SLIDE commandline incremental transition=scrollVert
+# Descargar el ejemplo
+## Para descargar el ejemplo dado
+
+	$ git clone https://github.com/chrodriguez/capacitacion_chef.git
+	$ cd capacitacion_chef 
+	$ cd samples/01-chef-dev/03-berkshelf

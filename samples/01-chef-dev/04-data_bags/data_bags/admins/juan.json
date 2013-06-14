@@ -1,0 +1,8 @@
+{
+  "id": "juan",
+  "uid": 5000,
+  "gid": "users",
+  "shell": "/bin/bash",
+  "comment": "Este usuario es Juan"
+}
+
