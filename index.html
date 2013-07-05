@@ -428,7 +428,7 @@ software.</p>
 
 <h2>Ciclo de vida</h2>
 
-<p>Se define Ciclo de vida el tiempo promedio que toma desde que un nuevo
+<p>Se define Ciclo de vida al tiempo promedio que toma desde que un nuevo
 requerimiento es aprobado, se hace un requerimiento de cambio, o un error es
 identificado, hasta su pase a producci&#xF3;n.</p>
 
@@ -3502,10 +3502,675 @@ plugin de Vagrant que soluciona este problema: <a href="https://github.com/schis
 
 <p><code>$ vagrant up --provider=aws</code></p>
 </div>
-</div><div class="slide" data-transition="scrollVert"><div class="content center subsection" ref="02-chef-prod/01-intro">
-<h1>TODO</h1>
+</div><div class="slide" data-transition="scrollVert"><div class="content center subsection" ref="02-chef-prod/01-intro/1">
+<h1>Chef en Producci&#xF3;n</h1>
+</div>
+</div><div class="slide" data-transition="scrollVert"><div class="content smbullets" ref="02-chef-prod/01-intro/2">
+<h1>&#xBF;A qu&#xE9; llamamos Chef en producci&#xF3;n?</h1>
 
-<p class="notes">https://github.com/jonlives/knife-spork</p>
+<ul>
+<li>Hasta ahora ven&#xED;amos trabajando con cookbooks usando <strong>chef-solo</strong></li>
+<li>Ahora vamos a trabajar con el ecosistema de chef, donde el servidor cumple un
+rol fundamental</li>
+</ul>
+</div>
+</div><div class="slide" data-transition="scrollVert"><div class="content" ref="02-chef-prod/01-intro/3">
+<h1>La arquitectura de Chef</h1>
+
+<p><img src="./file/02-chef-prod/topologia-chef.png" alt="topologia"/>
+</p>
+</div>
+</div><div class="slide" data-transition="scrollVert"><div class="content smbullets" ref="02-chef-prod/01-intro/4">
+<h1>Workstations</h1>
+
+<ul>
+<li>Es una m&#xE1;quina configurada para correr <strong>knife</strong>, preparada para:
+
+<ul>
+<li>Sincronizar con el repositorio de chef</li>
+<li>Interactuar con un servidor de chef</li>
+</ul></li>
+<li>Es desde donde los usuarios de chef realizar&#xE1;n la mayor parte de su labor</li>
+</ul>
+</div>
+</div><div class="slide" data-transition="scrollVert"><div class="content smbullets" ref="02-chef-prod/01-intro/5">
+<h1>Workstations</h1>
+
+<ul>
+<li>Desde el workstation, los usuarios realizar&#xE1;n tareas como:
+
+<ul>
+<li>Desarrollo de cookbooks </li>
+<li>Manteniendo el repositorio de chef sincronizado con un SCM</li>
+<li>Utilizando <code>knife</code> para actualizar al servidor Chef desde el repositorio de
+Chef</li>
+<li>Configurando pol&#xED;ticas organizacionales, utilizando <code>roles</code> y <code>ambientes</code>,
+as&#xED; como empleando <code>data bags</code> para el almancenamiento de datos cr&#xED;ticos</li>
+</ul></li>
+</ul>
+</div>
+</div><div class="slide" data-transition="scrollVert"><div class="content smbullets small" ref="02-chef-prod/01-intro/6">
+<h1>Chef Server</h1>
+
+<ul>
+<li>Act&#xFA;a como un hub donde se mantienen datos de configuraci&#xF3;n</li>
+<li>Almacena: 
+
+<ul>
+<li>cookbooks</li>
+<li>pol&#xED;ticas que se aplicar&#xE1;n a los cookbooks</li>
+<li>metadatos describiendo cada nodo registrado en la infraestructura</li>
+</ul></li>
+<li>Los nodos utilizar&#xE1;n <code>chef-client</code> para consultar al Chef Server sobre
+detalles de configuraci&#xF3;n</li>
+<li><code>chef-client</code> realizar&#xE1; toda la configuraci&#xF3;n en cada nodo. <em>No en el Chef
+Server</em>
+
+<ul>
+<li>Este enfoque escalable destribuye el esfuerzo de configuraci&#xF3;n a lo largo de
+la organizaci&#xF3;n</li>
+</ul></li>
+</ul>
+</div>
+</div><div class="slide" data-transition="scrollVert"><div class="content smbullets" ref="02-chef-prod/01-intro/7">
+<h1>Nodes</h1>
+
+<ul>
+<li>Estas entidades son las m&#xE1;quinas que configuraremos utilizando Chef</li>
+<li>Aplicar&#xE1;n las configuraciones corriendo <code>chef-client</code> que es como <code>chef-solo</code>
+pero obteniendo los atributtes desde Chef Server en vez de <em>setearlos</em>
+manualmente en cada corrida como hac&#xED;amos con <em>vagrant</em></li>
+</ul>
+</div>
+</div><div class="slide" data-transition="scrollVert"><div class="content center subsection" ref="02-chef-prod/02-chef-server/1">
+<h1>Chef Server</h1>
+</div>
+</div><div class="slide" data-transition="scrollVert"><div class="content smbullets" ref="02-chef-prod/02-chef-server/2">
+<h1>Historia del Chef Server</h1>
+
+<ul>
+<li>A partir de la versi&#xF3;n 11.x de Chef, el frontend se desarroll&#xF3; con <strong><a href="http://www.erlang.org/">Earlang</a></strong>
+
+<ul>
+<li>Lenguaje creado en 1986</li>
+<li>Liberado en 1998</li>
+<li>Excelente para asuntos cr&#xED;ticos empresariales: concurrencia, tolerancia a
+fallos, ambientes distribu&#xED;dos. </li>
+</ul></li>
+<li>A esta componente se la suele llamar <strong>Erchef</strong></li>
+</ul>
+</div>
+</div><div class="slide" data-transition="scrollVert"><div class="content smbullets" ref="02-chef-prod/02-chef-server/3">
+<h1>Componentes del Chef Server</h1>
+
+<p><img src="./file/02-chef-prod/server_components.png" alt="components"/>
+</p>
+</div>
+</div><div class="slide" data-transition="scrollVert"><div class="content small smbullets" ref="02-chef-prod/02-chef-server/4">
+<h1>Componentes del Chef Server</h1>
+
+<ul>
+<li><strong>Bookshelf:</strong> almacena el contenido de los cookbooks que hayan sido subidos
+al Chef Server versionados seg&#xFA;n se hayan subido. El almacenamiento de cookbooks
+es manejado independientemente del Chef Server e &#xED;ndice de b&#xFA;squedas.</li>
+<li><strong>Web UI:</strong> es una aplicaci&#xF3;n Ruby on Rails 3.0 que hostea una aplicaci&#xF3;n de
+frontend a la API provista por Erchef</li>
+<li><strong>Erchef:</strong> es la API central, el cerebro del Chef Server que al ser
+reimplementada en Earlang, ha mejorado notablemente su velocidad respecto de
+versiones previas. La API es totalmente compatible con la versi&#xF3;n previa
+desarrollada en Ruby</li>
+</ul>
+</div>
+</div><div class="slide" data-transition="scrollVert"><div class="content small smbullets" ref="02-chef-prod/02-chef-server/5">
+<h1>Componentes del Chef Server</h1>
+
+<ul>
+<li><strong>Message Queues:</strong> los mensajes son enviados al Search Index utilizando las
+siguientes componentes:
+
+<ul>
+<li><a href="http://www.rabbitmq.com/">RabbitMQ</a>: Chef Server en vez de comunicarse
+directamente con el Search Index, primero lo hace con una <strong>cola</strong></li>
+<li><strong>chef-expander</strong> es utilizado para extraer los mensajes desde las colas,
+procesarlas al formato necesario, para luego ser posteadas a <strong>chef-solr</strong></li>
+<li><strong>chef-solr</strong> es un wrapper de <a href="http://lucene.apache.org/solr/">Apache Solr</a> exponiendo su API Rest para
+indexaci&#xF3;n y b&#xFA;squeda</li>
+</ul></li>
+<li><strong><a href="http://nginx.org/">Nginx</a>:</strong> reverse proxy HTTP usado como frontend load balancer</li>
+<li><strong>PostgresSQL:</strong> base de datos usada por Chef Server</li>
+</ul>
+</div>
+</div><div class="slide" data-transition="scrollVert"><div class="content smbullets" ref="02-chef-prod/02-chef-server/6">
+<h1>Caracter&#xED;sticas que provee</h1>
+
+<ul>
+<li><strong>Chef Server API:</strong> API REST que provee acceso a los objetos en Chef Server</li>
+<li><strong>Data bags:</strong> variables globales almacenadas en formato JSON accesibles desde
+un Chef Server</li>
+<li><strong>Environments:</strong> forma de mapear workflows de la organizaci&#xF3;n en Chef Server</li>
+<li><strong>Node objects:</strong> consiste de un <code>run-list</code> y <code>attributtes</code> del nodo, en
+formato JSON que es almacenado en Chef Server. El <code>chef-client</code> recibe una
+copia desde el Chef Server durante cada corrida de Chef y luego almacena un
+nuevo <em>node object</em> en Chef Server al finalizar la corrida de Chef.</li>
+</ul>
+</div>
+</div><div class="slide" data-transition="scrollVert"><div class="content smbullets" ref="02-chef-prod/02-chef-server/7">
+<h1>Caracter&#xED;sticas que provee</h1>
+
+<ul>
+<li><strong>Roles:</strong> una forma de definir patrones y procesos que aplican a varios nodos
+de la organizaci&#xF3;n como pertenecientes a una funci&#xF3;n o tarea determinada. Por
+ejemplo web servers, mail servers, etc.</li>
+<li><strong>Search:</strong> los &#xED;ndices de b&#xFA;squeda permiten realizar consultas de cualquier
+tipo de dato que sea indexado por el Chef Server, incluyendo data bags,
+environments, nodes y roles.</li>
+</ul>
+</div>
+</div><div class="slide" data-transition="scrollVert"><div class="content smbullets" ref="02-chef-prod/02-chef-server/8">
+<h1>Versiones de Chef Server</h1>
+
+<ul>
+<li><strong>Hosted Chef:</strong> hosteado por Opscode. Es gratuito hasta 5 nodos. Luego de este
+l&#xED;mite, se cobra un monto que depende de la cantidad de nodos. Garantiza
+(24x7/365), actualizaciones peri&#xF3;dicas</li>
+<li><strong>Private Chef:</strong> versi&#xF3;n similar a la anterior, pero que por requerimientos de la
+organizaci&#xF3;n, el Chef Server debe ubicarse detr&#xE1;s de un firewall</li>
+<li><strong>Open Source Chef:</strong> versi&#xF3;n gratuita del Chef Server, donde cada organizaci&#xF3;n
+gestiona el servicio, incluyendo migraciones, backups, aplicando
+actualizaciones. No incluye soporte de Opscode</li>
+</ul>
+</div>
+</div><div class="slide" data-transition="scrollVert"><div class="content" ref="02-chef-prod/02-chef-server/9">
+<h1>Web UI Login</h1>
+
+<p><img src="./file/02-chef-prod/webui-login.png" alt="web ui login"/>
+</p>
+</div>
+</div><div class="slide" data-transition="scrollVert"><div class="content" ref="02-chef-prod/02-chef-server/10">
+<h1>Web UI</h1>
+
+<p><img src="./file/02-chef-prod/webui.png" alt="web ui"/>
+</p>
+</div>
+</div><div class="slide" data-transition="scrollVert"><div class="content smbullets" ref="02-chef-prod/02-chef-server/11">
+<h1>Consideraciones para instalar Chef Server</h1>
+
+<ul>
+<li>Se siguen los pasos indicados en la p&#xE1;gina</li>
+<li>Se requiere ser cauteloso con <strong>FQDN</strong>
+
+<ul>
+<li>Que el comando <code>hostname</code> retorne un nombre incluyendo el <em>dominio</em></li>
+<li>Que el nombre del Chef Server sea conocido por DNS (o en ambientes de
+testing, alcanzar&#xED;a con que se indique en <code>/etc/hosts</code>)</li>
+</ul></li>
+</ul>
+</div>
+</div><div class="slide" data-transition="scrollVert"><div class="content commandline incremental" ref="02-chef-prod/02-chef-server/12">
+<h1>Instalamos Chef Server con Berkshelf</h1>
+
+<h2>Preparamos un directorio para Berkshelf</h2>
+
+<pre><code><code class="command">$ mkdir chef-server</code>
+<code class="command">$ cd chef-server</code>
+<code class="command">$ berks init</code>
+<code class="result">      create  Berksfile
+      create  Thorfile
+      create  .gitignore
+         run  git init from "."
+      create  Gemfile
+      create  Vagrantfile
+Successfully initialized
+</code><code class="command">$ bundle</code>
+<code class="result">Fetching gem metadata from https://rubygems.org/..........
+Resolving dependencies...
+Using i18n (0.6.1) 
+Using multi_json (1.7.7) 
+...
+</code></code></pre>
+</div>
+</div><div class="slide" data-transition="scrollVert"><div class="content" ref="02-chef-prod/02-chef-server/13">
+<h1>Instalamos Chef Server con Berkshelf</h1>
+
+<h2>Editamos el Berksfile</h2>
+
+<pre class="sh_ruby"><code>site :opscode
+
+cookbook 'chef-server'</code></pre>
+</div>
+</div><div class="slide" data-transition="scrollVert"><div class="content commandline incremental small" ref="02-chef-prod/02-chef-server/14">
+<h1>Instalamos Chef Server con Berkshelf</h1>
+
+<h2>Verificamos los cookbooks</h2>
+
+<pre><code><code class="command">$ berks</code>
+<code class="result">Installing chef-server (2.0.0) from site: 'http://cookbooks.opscode.com/api/v1/cookbooks'
+Using runit (0.16.2)
+Using bluepill (2.2.0)
+Using rsyslog (1.5.0)
+Using daemontools (1.0.0)
+Using build-essential (1.3.2)
+Using ucspi-tcp (1.0.0)
+Using couchdb (2.1.0)
+Using erlang (1.1.2)
+Using yum (2.1.0)
+Using apache2 (1.4.0)
+Using nginx (1.2.0)
+Using ohai (1.1.6)
+Using openssl (1.0.0)
+Using zlib (2.0.0)
+Using xml (1.1.2)
+Using java (1.9.4)
+Using windows (1.8.2)
+Using chef_handler (1.1.4)
+Using gecode (2.0.0)
+Using apt (2.0.0)
+</code></code></pre>
+
+<p><em>Si fuese necesario correr</em> <code>berks update</code></p>
+</div>
+</div><div class="slide" data-transition="scrollVert"><div class="content commandline incremental" ref="02-chef-prod/02-chef-server/15">
+<h1>Instalamos Chef Server con Berkshelf</h1>
+
+<h2><code>vagrant up</code> y Listo!!</h2>
+
+<pre><code><code class="command">$ vagrant up</code>
+</code></pre>
+</div>
+</div><div class="slide" data-transition="scrollVert"><div class="content" ref="02-chef-prod/02-chef-server/16">
+<h1>Probamos Chef Server con Berkshelf</h1>
+
+<p>Como Chef Server requiere el <strong>FQDN</strong>, debemos agregar en el <code>/etc/hosts</code> una 
+entrada para la ip que hayamos dado a vagrant en nuestra m&#xE1;quina con el nombre:
+<code>chef-server-berkshelf</code></p>
+</div>
+</div><div class="slide" data-transition="scrollVert"><div class="content commandline incremental" ref="02-chef-prod/02-chef-server/17">
+<h1>Descargar el ejemplo</h1>
+
+<h2>Para descargar el ejemplo dado</h2>
+
+<pre><code><code class="command">$ git clone https://github.com/chrodriguez/capacitacion_chef.git</code>
+<code class="command">$ cd capacitacion_chef&#xB7;</code>
+<code class="command">$ cd samples/02-chef-prod/chef-server</code>
+</code></pre>
+</div>
+</div><div class="slide" data-transition="scrollVert"><div class="content center subsection" ref="02-chef-prod/03-chef-workstation/1">
+<h1>Workstation</h1>
+</div>
+</div><div class="slide" data-transition="scrollVert"><div class="content smbullets" ref="02-chef-prod/03-chef-workstation/2">
+<h1>Prerequisitos para instalar el Workstation</h1>
+
+<ul>
+<li>Disponer de acceso a un Chef Server
+
+<ul>
+<li>Usaremos el ejemplo dado anteriormente</li>
+<li>Podr&#xED;amos usar Hosted Chef Server</li>
+</ul></li>
+<li>Es aconsejable utilizar <em><a href="https://github.com/opscode/chef-repo">chef-repo</a></em>
+
+<ul>
+<li>Empleando <code>git</code> para versionarlo en un servidor propio de GIT o forkeando en
+github</li>
+</ul></li>
+<li>Instalar chef en nuestra m&#xE1;quina (en el workstation)</li>
+<li>Copiar desde el Chef Server <code>/etc/chef-server/chef-validation.pem</code> a nuestro
+workstation</li>
+</ul>
+</div>
+</div><div class="slide" data-transition="scrollVert"><div class="content commandline small" ref="02-chef-prod/03-chef-workstation/3">
+<h1>Instalando prerequisitos</h1>
+
+<p>Asumiendo que ya decidimos qu&#xE9; Chef Server usamos y sin importar si usamos o no
+<em>chef-repo</em> aun, instalamos chef</p>
+
+<pre><code><code class="command">$ mkdir -p workstation/.chef</code>
+<code class="command">$ cd workstation</code>
+<code class="command">$ bundle init</code>
+<code class="result">Writing new Gemfile to ....
+</code></code></pre>
+</div>
+</div><div class="slide" data-transition="scrollVert"><div class="content" ref="02-chef-prod/03-chef-workstation/4">
+<h1>Instalando prerequisitos</h1>
+
+<h2>Editamos el <code>Gemfile</code></h2>
+
+<pre class="sh_ruby"><code># A sample Gemfile
+source "https://rubygems.org"
+
+gem "chef"</code></pre>
+
+<p>Corremos luego <code>bundle</code></p>
+</div>
+</div><div class="slide" data-transition="scrollVert"><div class="content bullets small" ref="02-chef-prod/03-chef-workstation/5">
+<h1>Instalando prerequisitos</h1>
+
+<h2>Obteniendo los certificados</h2>
+
+<ul>
+<li>Copiamos dentro del directorio <code>.chef</code> el archivo <code>chef-validation.pem</code> desde el
+Chef Server
+
+<ul>
+<li>Por lo general, en Chef Server este archivo est&#xE1; en <code>/etc/chef-server</code></li>
+</ul></li>
+<li>Accedemos adem&#xE1;s al Chef Server Web UI con el usuario <strong>admin</strong> y obtenemos
+la clave pribada de admin: <code>admin.pem</code> que copiamos en <code>/tmp/admin.pem</code>
+
+<ul>
+<li>Si no queremos usar Web UI, podemos seguir los mismos pasos que para
+<code>validation.pem</code>, el certificado del usuario admin, est&#xE1; generalmente en el
+mismo directorio</li>
+</ul></li>
+</ul>
+</div>
+</div><div class="slide" data-transition="scrollVert"><div class="content commandline small" ref="02-chef-prod/03-chef-workstation/6">
+<h1>Configurando el Workstation</h1>
+
+<h2>Configuramos por primera vez</h2>
+
+<pre><code><code class="command">$ touch .chef/knife.rb</code>
+<code class="command">$ bundle exec knife configure --initial</code>
+<code class="result">/xxxx/workstation/.chef/knife.rb?  (Y/N) 
+    y
+
+Please enter the chef server URL: [http://yourhostname:4000] 
+    https://chef-server-berkshelf/
+
+Please enter a name for the new user: [car] 
+Please enter the existing admin name: [admin] 
+Please enter the location of the existing admin's private key: [/etc/chef/admin.pem] 
+    /tmp/admin.pem
+
+Please enter the validation clientname: [chef-validator] 
+Please enter the location of the validation key: [/etc/chef/validation.pem] 
+    /xxx/workstation/.chef/chef-validation.pem
+
+Please enter the path to a chef repository (or leave blank): 
+Creating initial API user...
+Please enter a password for the new user: 
+Created user[car]
+</code></code></pre>
+
+<p>Luego podemos eliminar <code>/tmp/admin.pem</code></p>
+</div>
+</div><div class="slide" data-transition="scrollVert"><div class="content commandline incremental" ref="02-chef-prod/03-chef-workstation/7">
+<h1>Verificando el Workstation</h1>
+
+<h2>Utilizamos <code>knife</code></h2>
+
+<pre><code><code class="command">$ knife client list</code>
+<code class="result">chef-validator
+chef-webui
+
+</code><code class="command">$ knife user list</code>
+<code class="result">admin
+SU USUARIO
+</code></code></pre>
+</div>
+</div><div class="slide" data-transition="scrollVert"><div class="content smbullets small" ref="02-chef-prod/03-chef-workstation/8">
+<h1>Usando chef-repo</h1>
+
+<ul>
+<li>Es una estructura de directorios <strong>conveniente</strong> para el trabajo desde un
+workstation</li>
+<li>El repo original es:
+<a href="https://github.com/opscode/chef-repo">https://github.com/opscode/chef-repo</a>]</li>
+<li><p>Las pruebas que hicimos con <code>knife</code> anteriormente fueron en un directorio que
+s&#xF3;lo contiene:</p>
+
+<ul>
+<li><code>Gemfile</code></li>
+<li><code>.chef/</code></li>
+</ul></li>
+<li><p>Podemos forkear el repositorio de Opscode en Github y crear nuestro propio
+<code>chef-repo</code></p></li>
+<li><p>Clonamos nuestro propio <code>chef-repo</code> en alg&#xFA;n directorio y copiamos la
+configuracion que hab&#xED;amos hecho para <code>knife</code></p></li>
+</ul>
+</div>
+</div><div class="slide" data-transition="scrollVert"><div class="content commandline" ref="02-chef-prod/03-chef-workstation/9">
+<h1>Usando chef-repo</h1>
+
+<p>Asumiendo que el <code>Gemfile</code> y <code>.chef/</code> se encuentran en <code>/undir</code></p>
+
+<pre><code><code class="command">$ git clone https://github.com/MIUSER/chef-repo</code>
+<code class="result">Cloning into 'chef-repo'...
+remote: Counting objects: 213, done.
+remote: Compressing objects: 100% (131/131), done.
+remote: Total 213 (delta 76), reused 173 (delta 48)
+Receiving objects: 100% (213/213), 36.90 KiB, done.
+Resolving deltas: 100% (76/76), done.
+
+</code><code class="command">$ cd chef-repo</code>
+<code class="command">$ cp -pr /undir/Gemfile /undir/.chef .</code>
+<code class="command">$ bundle</code>
+<code class="command">$ knife user list</code>
+</code></pre>
+</div>
+</div><div class="slide" data-transition="none"><div class="content smbullets ransition=scrollVert" ref="02-chef-prod/03-chef-workstation/10">
+<h1>Usando chef-repo</h1>
+
+<ul>
+<li>Cada workstation de Chef <strong>requiere un chef-repo</strong></li>
+<li>En este repositorio existen los cookbooks, roles, archivos de configuraci&#xF3;n,
+etc. usados para manipular Chef</li>
+<li>Se recomienda que utilizar alg&#xFA;n SCM para versionar este directorio</li>
+</ul>
+</div>
+</div><div class="slide" data-transition="none"><div class="content smbullets small ransition=scrollVert" ref="02-chef-prod/03-chef-workstation/11">
+<h1>Directorios de chef-repo</h1>
+
+<ul>
+<li><code>certificates/</code>: certificados SSL generados con <code>rake ssl_cert</code></li>
+<li><code>config/</code>: configuraci&#xF3;n de las tareas <code>rake</code> como por ejemplo la
+configuraci&#xF3;n usada para generar los certificados SSL</li>
+<li><code>cookbooks/</code>: directorio donde se encuentran los cookbooks descargados o
+creados. Luego veremos que existen gemas que ayudan a gestionar este
+directorio</li>
+<li><code>data_bags/</code>: almancenamiento de data bags en formato .rb y .json. Sirve de backup,
+copia, acceso directo, de lo que realmene est&#xE1; en el Chef Server</li>
+<li><code>roles/</code>: almacenamiento de roles en formato .rb y .json. Sirve de backup,
+copia, acceso directo, de lo que realmente est&#xE1; en el Chef Server</li>
+</ul>
+</div>
+</div><div class="slide" data-transition="none"><div class="content smbullets small ransition=scrollVert" ref="02-chef-prod/03-chef-workstation/12">
+<h1>Tareas rake</h1>
+
+<ul>
+<li>Pueden conocerse todas las tareas rake usando <code>rake -T</code></li>
+<li>Por defecto, la tarea que se corre si no se especifica ninguna es
+<code>test_cookbooks</code></li>
+<li>Las m&#xE1;s importantes son:
+
+<ul>
+<li><code>bundle_cookbook[cookbook]</code>: crea tarballs de cookbooks en  el directorio <code>pkgs/</code></li>
+<li><code>install</code>:  llama a las tareas <code>rake</code> de <code>update</code>, <code>roles</code> y <code>upload_cookbooks</code></li>
+<li><code>ssl_cert</code>: crea certificados SSL autofirmados en el directorio <code>certificates/</code></li>
+<li><code>update</code>: actualiza el repositorio usando el SCM. Solo entiende <code>git</code> y <code>svn</code></li>
+</ul></li>
+<li>El resto de las tareas mencionadas por <code>rake -T</code> se duplican con funcionalidad
+que puede lograrse usando el comando <code>knife</code> por lo que probablemente sean
+removidas en futuras versiones</li>
+</ul>
+</div>
+</div><div class="slide" data-transition="scrollVert"><div class="content center subsection" ref="02-chef-prod/04-knife/1">
+<h1>Knife</h1>
+</div>
+</div><div class="slide" data-transition="scrollVert"><div class="content smbullets" ref="02-chef-prod/04-knife/2">
+<h1>Bootstrap de un nodo</h1>
+
+<ul>
+<li>Se llama <em>bootstrap de un nodo</em> a la instalaci&#xF3;n de chef en el nodo y 
+registraci&#xF3;n ante Chef Server</li>
+<li>Para llevar a cabo este procedimiento, debemos:
+
+<ul>
+<li>Conocer de antemano el <strong>FQDN</strong> o <strong>direcci&#xF3;n IP</strong> del nuevo nodo</li>
+<li>Correr el comando <code>knife bootstrap</code></li>
+<li>Verificar el nodo en Chef Server</li>
+</ul></li>
+</ul>
+</div>
+</div><div class="slide" data-transition="scrollVert"><div class="content smbullets small" ref="02-chef-prod/04-knife/3">
+<h1>Corriendo el comando knife bootstrap</h1>
+
+<ul>
+<li>El comando <code>knife bootstrap</code> requiere la direcci&#xF3;n IP o FQDN de un nodo</li>
+<li>Una vez ejecutado el comando, se realiza una conexi&#xF3;n ssh al nodo donde:
+
+<ul>
+<li>Instalar&#xE1; <code>chef-client</code> si es necesario</li>
+<li>Generar&#xE1; claves</li>
+<li>Registrar&#xE1; el nodo con Chef Server</li>
+</ul></li>
+<li>Para realizar la primer conexi&#xF3;n se requerir&#xE1;:
+
+<ul>
+<li>Usuario y clave ssh o archivo de identidad</li>
+<li>Acceso como root al nodo</li>
+<li>Y si el sistema destino <strong>no es Ubuntu</strong> debemos indicar el SO por &#xFA;nica vez</li>
+</ul></li>
+<li><p>Un ejemplo:</p>
+
+<p><code>$  knife bootstrap 123.45.6.789 -x username -P password --sudo</code></p></li>
+</ul>
+</div>
+</div><div class="slide" data-transition="scrollVert"><div class="content commandline" ref="02-chef-prod/04-knife/4">
+<h1>Verificando el nodo</h1>
+
+<p>Opcionalmente, luego de realizar un <code>bootstrap</code> es conveniente verificar si
+Chef Server conoce al nuevo nodo:</p>
+
+<pre><code><code class="command">$ knife client show node_name</code>
+<code class="result">admin:       false
+chef_type:   client
+json_class:  Chef::ApiClient
+name:        name_of_node
+public_key:
+</code></code></pre>
+
+<p>Donde, <code>node_name</code> es el nombre del nodo recientemente creado</p>
+</div>
+</div><div class="slide" data-transition="scrollVert"><div class="content commandline" ref="02-chef-prod/04-knife/5">
+<h1>Verificando el nodo</h1>
+
+<p>Adem&#xE1;s podemos verificar todos los nodos registrados con Chef Server, usando
+knife:</p>
+
+<pre><code><code class="command">$ knife client list</code>
+<code class="result">workstation
+workstation
+...
+client
+...
+node_name
+...
+client
+</code></code></pre>
+</div>
+</div><div class="slide" data-transition="scrollVert"><div class="content small smbullets" ref="02-chef-prod/04-knife/6">
+<h1>Subcomandos knife</h1>
+
+<ul>
+<li><code>client</code>: manipula los clientes de la API, es decir nodos que emplean
+<em>chef-client</em> y workstations que usan <em>knife</em></li>
+<li><code>configure</code>: utilizado para crear los archivos <code>knife.rb</code> y <code>client.rb</code> a ser
+distribuidos a workstations y nodos</li>
+<li><code>cookbook</code>: usado para interactuar con cookbooks ubicadas en Chef Server o
+chef-repo</li>
+<li><code>cookbook site</code>: permite interactuar con cookbooks ubicadas en
+<a href="https://cookbooks.opscode.com/">https://cookbooks.opscode.com/</a></li>
+<li><code>data bag</code>: manipula data bags </li>
+<li><code>delete</code>: elimina un objeto de Chef Server</li>
+<li><code>diff</code>: compara diferencias entre archivos del chef repo y Chef Server</li>
+<li><code>download</code>: permite descargar de Chef Serer en chef repo <em>roles</em>, <em>cookbooks</em>,
+<em>environments</em>, <em>nodes</em> y <em>data bags</em> </li>
+</ul>
+</div>
+</div><div class="slide" data-transition="scrollVert"><div class="content small smbullets" ref="02-chef-prod/04-knife/7">
+<h1>Subcomandos knife</h1>
+
+<ul>
+<li><code>environment</code>: manejo de environments</li>
+<li><code>exec</code>: ejecuta scripts ruby en el contexto de un chef-client completamente 
+configurado</li>
+<li><code>index rebuild</code>: reindexa el Chef Server. La operaci&#xF3;n es destructiva y puede
+tardar un poco</li>
+<li><code>list</code>: ver lista de objetos en Chef Server </li>
+<li><code>node</code>: manipula nodes en Chef Server</li>
+<li><code>raw:</code> env&#xED;a requerimientos RAW a la API de Chef Server </li>
+<li><code>recipe list</code>: permite listar todas las recipes disponibles, incluso
+utilizando filtros</li>
+<li><code>role</code>: manejo de roles en Chef Server</li>
+</ul>
+</div>
+</div><div class="slide" data-transition="scrollVert"><div class="content small smbullets" ref="02-chef-prod/04-knife/8">
+<h1>Subcomandos knife</h1>
+
+<ul>
+<li><code>search</code>: b&#xFA;squedas sobre elementos indexados por Chef Server</li>
+<li><code>show</code>: visualizar detalles de uno o m&#xE1;s objetos en Chef Server</li>
+<li><code>ssh</code>: invoca comandos SSH (en parelelo) en un subconjunto de nodos dentro de
+una organizaci&#xF3;n, bas&#xE1;ndose en resultados de b&#xFA;squeda</li>
+<li><code>status</code>: muestra informaci&#xF3;n resumida de los nodes en Chef Server, incluyendo
+el tiempo de la &#xFA;ltima corrida exitosa de chef-client.</li>
+<li><code>tag</code>: permite aplicar y manipular tags sobre nodes</li>
+<li><code>upload</code>: permite cargar <em>roles</em>, <em>cookbooks</em>, <em>ambientes</em> y <em>data bags</em> al
+chef Server</li>
+<li><code>user</code>: manejo de usuarios y pares de claves p&#xFA;blicas RSA</li>
+</ul>
+</div>
+</div><div class="slide" data-transition="scrollVert"><div class="content smaller" ref="02-chef-prod/04-knife/9">
+<h1>Plugins de knife</h1>
+
+<ul>
+<li>Povistos por Opscode
+
+<ul>
+<li><strong>azure:</strong> integra con Microsoft Azure</li>
+<li><strong>bluebox:</strong> integra con BlueBox</li>
+<li><strong>ec2:</strong> Amazon EC2</li>
+<li><strong>eucalyptus:</strong> simplifica la gesti&#xF3;n de servidores hosteados utilizando
+Eucalyptus</li>
+<li><strong>google:</strong> se integra con Google Compute Engine </li>
+<li><strong>hp:</strong> HP Cloud Compute</li>
+<li><strong>linode:</strong> se integra con Linode cloud</li>
+<li><strong>openstack:</strong> clouds OpenStack</li>
+<li><strong>rackspace:</strong> integraci&#xF3;n con rackspace</li>
+<li><strong>terremark:</strong> se integra con Terremark</li>
+<li><strong>windows:</strong> configura e interact&#xFA;a con nodes Windows. Para ello utiliza
+Windows Remote Management, que permite a objetos nativos (como scripts
+batch, scripts en Powershell, etc) ser llamados desde aplicaciones externas</li>
+</ul></li>
+</ul>
+</div>
+</div><div class="slide" data-transition="scrollVert"><div class="content smaller" ref="02-chef-prod/04-knife/10">
+<h1>Plugins de knife</h1>
+
+<ul>
+<li>Plugins comunitarios m&#xE1;s conocidos
+
+<ul>
+<li><strong>knife-essentials:</strong> agrega la posibilidad de manipular knife con verbos como
+si operara sobre un filesystem</li>
+<li><strong>knife-cloudstack / knife-cloudstack-fog:</strong> bootstrap integrado con
+Cloudstack</li>
+<li><strong>knife-esx:</strong> bootstrap integrado con VMWare </li>
+<li><strong>knife-ipmi:</strong> simple manejo de power usando IPMI</li>
+<li><strong>knife-rvc:</strong> integra un subconjunto de la funcionalidad de knife con
+vSphere</li>
+<li><strong>knife-spork:</strong> workflows para el manejo de cookbooks y ambientes en teams
+de varios integrantes</li>
+</ul></li>
+<li>M&#xE1;s plugins en <a href="http://docs.opscode.com/community_plugin_knife.html">Docs Opscode</a></li>
+</ul>
+</div>
+</div><div class="slide" data-transition="scrollVert"><div class="content center subsection small" ref="02-chef-prod/04-knife/11">
+<p><img src="./file/02-chef-prod/saca-lengua.png" alt="saca-lengua"/>
+
+<h1>&#xA1;&#xA1;Gracias a todos por organizar el ASADO de ma&#xF1;ana!!</h1>
+</p>
 </div>
 </div></div>
 <div id="pauseScreen">
