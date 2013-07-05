@@ -47,7 +47,7 @@ Corremos luego `bundle`
   Chef Server
   * Por lo general, en Chef Server este archivo está en `/etc/chef-server`
 * Accedemos además al Chef Server Web UI con el usuario **admin** y obtenemos
-  la clave pribada de admin: `admin.pem` que copiamos en `/tmp/admin.pem`
+  la clave privada de admin: `admin.pem` que copiamos en `/tmp/admin.pem`
   * Si no queremos usar Web UI, podemos seguir los mismos pasos que para
     `validation.pem`, el certificado del usuario admin, está generalmente en el
     mismo directorio
