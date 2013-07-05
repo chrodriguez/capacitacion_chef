@@ -35,7 +35,7 @@ software.
 !SLIDE bullets transition=scrollVert
 # Ciclo de vida
 ## Ciclo de vida
-Se define Ciclo de vida el tiempo promedio que toma desde que un nuevo
+Se define Ciclo de vida al tiempo promedio que toma desde que un nuevo
 requerimiento es aprobado, se hace un requerimiento de cambio, o un error es
 identificado, hasta su pase a producción.
 
